@@ -1,1 +1,1 @@
-web: python3 moon.py
+worker: python3 moon.py

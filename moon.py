@@ -24,7 +24,7 @@ def bookup(task=""):
        usrWallets = json.loads(usrwall, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
        allWallets = json.loads(allwall, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
        users      = json.loads(usrs, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
-       print("restored backup", users, usrWallets)
+       print("restored backup")
        return
 
     usrwall = json.dumps(usrWallets)
@@ -170,7 +170,7 @@ async def main(client, message):
 
 @moon.on_message(filters.text)
 async def wallet(client, message):
-    # extracted from moneroocean js
+    # extracted from moneroocean js regex
     Wpattern = "^[4|8]{1}([A-Za-z0-9]{105}|[A-Za-z0-9]{94})$"
     SwitchPatt = "^[💰]{1}[4|8]{1}[A-Za-z0-9]{7}[*]{4}[A-Za-z0-9]{8}$"
     DelPatt =    "^[4|8]{1}[A-Za-z0-9]{7}[*]{4}[A-Za-z0-9]{8}[💰]{1}$"
@@ -298,5 +298,4 @@ async def logger(client, message, msg, text=""):
     await client.send_message(logGroup, ms, disable_web_page_preview=True)
 
 bookup("startup")
-print("restored backup", users, usrWallets)
 moon.run()

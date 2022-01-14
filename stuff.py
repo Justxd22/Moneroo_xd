@@ -81,7 +81,7 @@ Note:Your public wallet address
 aboutMsg = """
 Hello **%s fello miner**,
 
-I'm **@** 👋
+I'm **@Moneroocean_xd_bot** 👋
 **Project** By **@Pine_Orange** also know as **@xd2222**
 
 **Info:**
@@ -122,7 +122,8 @@ donateMsg = """
  •Maybe Updating My rig?
 
 **Donating Address**
- •XMR:<code>%s</code>
+** •XMR:<code>%s</code>**
+
   total Donations Received: 0.0 XMR
   (click button bellow if you donated)
 
