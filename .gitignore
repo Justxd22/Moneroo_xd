@@ -1,0 +1,21 @@
+*.session-journal
+*.session
+.cache
+script_min.js
+mooproj.txt
+stuff.py2
+build
+log.txt
+roadmap
+info
+asy.py
+test.py
+tes.py
+*.mp3
+2021*
+# Directories
+__pycache__/
+Temp/
+temp/
+.cache/
+*/__pycache__/

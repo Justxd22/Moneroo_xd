@@ -1,0 +1,34 @@
+{
+  "name": "Moneroocean_XD",
+  "description": "Bot to fetch stats from moneroocean api",
+  "repository": "https://github.com/Justxd22/Moneroocean_XD",
+  "logo": "https://telegra.ph/file/8ad14778b61c467438095.jpg",
+  "keywords": [
+    "Moneroo","XD"
+  ],
+  "env":{
+  "token": {
+    "required": true,
+    "description": "Your telegram bot token get from bot father"
+  },
+  "app_id": {
+    "required": true,
+    "description": "Your app id"
+  },
+  "app_hash": {
+    "required": true,
+    "description": "Your app hash"
+  },
+  "logGroup": {
+    "required": true,
+    "description": "Group to be used for logging"
+  },
+  "redisURI": {
+    "required": true,
+    "description": "Your app redis db"
+  },
+  "redisPASS": {
+    "required": true,
+    "description": "Your app redis db pass"
+  }
+}}
