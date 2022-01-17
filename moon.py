@@ -182,13 +182,14 @@ async def wallet(client, message):
 
        if text in allWallets[message.from_user.id]:
           msg = "**I already saved this address** you can switch to it use 💰Wallet button"
-          await message.reply_text(msg)
+          await message.reply_text(msg, reply_markup = keybd)
+          await message.reply_sticker(stk2)
           return
 
        usrWallets[message.from_user.id] = text
        allWallets[message.from_user.id].extend([text])
        msg = f"**I saved your wallet** you can start using me now 👍 try the buttons\n\nYour Address: <code>{text}</code>"
-       await message.reply_text(msg)
+       await message.reply_text(msg, reply_markup = keybd)
        bookup()
        return
 
@@ -228,6 +229,7 @@ async def wallet(client, message):
            CurAddrs = usrWallets[message.from_user.id]
        except KeyError:
            await message.reply_text("**Sorry i don't have your wallet address** to fetch your mining stats, see /help")
+           await message.reply_sticker(stk1)
            return
 
        for i in addrs:
@@ -245,7 +247,8 @@ async def wallet(client, message):
        keypad = []
        try: addrs = allWallets[message.from_user.id]
        except KeyError:
-           await message.reply_text("**Huh?, there's nothing to delete**")
+           await message.reply_text("**Huh?, there's nothing to delete**", reply_markup = keybd)
+           await message.reply_sticker(stk1)
            return
 
        for i in addrs:
