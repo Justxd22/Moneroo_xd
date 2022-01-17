@@ -177,14 +177,15 @@ async def wallet(client, message):
     text = message.text
     if re.search(Wpattern, text):
        print("Valid Wallet!")
+       try: allWallets[message.from_user.id]
+       except KeyError: allWallets[message.from_user.id] = list()
+
        if text in allWallets[message.from_user.id]:
           msg = "**I already saved this address** you can switch to it use 💰Wallet button"
           await message.reply_text(msg)
           return
 
        usrWallets[message.from_user.id] = text
-       try: allWallets[message.from_user.id]
-       except KeyError: allWallets[message.from_user.id] = list()
        allWallets[message.from_user.id].extend([text])
        msg = f"**I saved your wallet** you can start using me now 👍 try the buttons\n\nYour Address: <code>{text}</code>"
        await message.reply_text(msg)
