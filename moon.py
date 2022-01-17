@@ -125,6 +125,7 @@ async def getkey(client, message):
 async def main(client, message):
     if not message.from_user.id in usrWallets:
        await message.reply_text("**Sorry i don't have your wallet address** to fetch your mining stats, see /help")
+       await message.reply_sticker(stk1)
        return
 
     messg = await message.reply_text(msg2)
@@ -217,6 +218,8 @@ async def wallet(client, message):
        allWallets[message.from_user.id].remove(wallid)
        if usrWallets[message.from_user.id] == wallid:
           usrWallets.pop(message.from_user.id)
+       try: usrWallets[message.from_user.id] = allWallets[message.from_user.id][0]
+       except: pass
        msg = f"**Alright removed your wallet** Address: <code>{wallid}</code>"
        await message.reply_text(msg, reply_markup = keybd)
        bookup()
@@ -226,9 +229,8 @@ async def wallet(client, message):
        keypad = []
        try:
            addrs = allWallets[message.from_user.id]
-           CurAddrs = usrWallets[message.from_user.id]
        except KeyError:
-           await message.reply_text("**Sorry i don't have your wallet address** to fetch your mining stats, see /help")
+           await message.reply_text("**Sorry i don't have any of your wallet addresses**, see /help")
            await message.reply_sticker(stk1)
            return
 
