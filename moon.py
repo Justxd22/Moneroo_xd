@@ -177,6 +177,11 @@ async def wallet(client, message):
     text = message.text
     if re.search(Wpattern, text):
        print("Valid Wallet!")
+       if text in allWallets:
+          msg = "**I already saved this address** you can switch to it use 💰Wallet button"
+          await message.reply_text(msg)
+          return
+
        usrWallets[message.from_user.id] = text
        try: allWallets[message.from_user.id]
        except KeyError: allWallets[message.from_user.id] = list()
@@ -210,7 +215,7 @@ async def wallet(client, message):
        allWallets[message.from_user.id].remove(wallid)
        if usrWallets[message.from_user.id] == wallid:
           usrWallets.pop(message.from_user.id)
-       msg = f"**Alright renoved your wallet** Address: <code>{wallid}</code>"
+       msg = f"**Alright removed your wallet** Address: <code>{wallid}</code>"
        await message.reply_text(msg, reply_markup = keybd)
        bookup()
        return
