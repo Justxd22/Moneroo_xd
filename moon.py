@@ -164,8 +164,8 @@ async def main(client, message):
 **Raw hashrare:** {homans(stats['hash'])}
 **Shares:** {stats['validShares']}
 **Rejected Shares:** {stats['invalidShares']}
-**XMR mined:** {stats['amtDue']/1000000000000} XMR
-**Paid XMR:** {stats['amtPaid']/1000000000000} XMR"""
+**XMR mined:** {format(stats['amtDue']/1000000000000, '.12f')} XMR
+**Paid XMR:** {format(stats['amtPaid']/1000000000000, '.12f')} XMR"""
     await stkr.delete()
     await messg.edit_text(msg)
 
