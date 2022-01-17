@@ -144,6 +144,8 @@ async def main(client, message):
        miners= requests.get(f"https://api.moneroocean.stream/miner/{wallet}/chart/hashrate/allWorkers", headers=statsheader)
        miners= json.loads(miners.text)
        totalMiners = len(miners)-1
+       paidamt = 0
+       if stats['amtPaid'] != 0: paidamt = format(stats['amtPaid']/1000000000000, '.12f')
        minersName = []
        for i in range(len(miners)):
            if i==0: continue;
@@ -165,7 +167,7 @@ async def main(client, message):
 **Shares:** {stats['validShares']}
 **Rejected Shares:** {stats['invalidShares']}
 **XMR mined:** {format(stats['amtDue']/1000000000000, '.12f')} XMR
-**Paid XMR:** {format(stats['amtPaid']/1000000000000, '.12f')} XMR"""
+**Paid XMR:** {paidamt} XMR"""
     await stkr.delete()
     await messg.edit_text(msg)
 
