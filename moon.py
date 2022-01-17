@@ -147,7 +147,7 @@ async def main(client, message):
        for i in range(len(miners)):
            if i==0: continue;
            minersName.append(list(miners.keys())[i])
-       if len(minersName) ==0: minersName['No miners Alive']
+       if len(minersName) ==0: minersName = 'No miners Alive'
        else: minersName = ", ".join(minersName)
 
     except Exception as e:
@@ -177,7 +177,7 @@ async def wallet(client, message):
     text = message.text
     if re.search(Wpattern, text):
        print("Valid Wallet!")
-       if text in allWallets:
+       if text in allWallets[message.from_user.id]:
           msg = "**I already saved this address** you can switch to it use 💰Wallet button"
           await message.reply_text(msg)
           return
