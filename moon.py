@@ -172,7 +172,7 @@ async def main(client, message, GRAPH=False):
     await stkr.delete()
     if GRAPH:
        await messg.delete()
-       await message.reply_document(graph,caption=msg,reply_markup=button)
+       await message.reply_photo(graph,caption=msg,reply_markup=button)
        #os.remove(graph)
     else: await messg.edit_text(msg, reply_markup = button)
 
