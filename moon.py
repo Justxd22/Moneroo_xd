@@ -4,6 +4,8 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from stuff import *
 from database import redis_connection
+from cgraph import apiformating, starttime
+from cgraph import plots as cgraph
 
 db = redis_connection()
 
@@ -26,6 +28,11 @@ def bookup(task=""):
        users      = json.loads(usrs, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
        print("restored backup")
        return
+       # idk what is lambda #copied from stackoverflow
+       # it convert json to py dict,
+       # (json have str numbers, dict has int numbers)
+       # without that thing output: {"12345678" : "4333aa*"}
+       # With this thing output   : { 12345678  : "4333aa*"}
 
     usrwall = json.dumps(usrWallets)
     allwall = json.dumps(allWallets)
@@ -44,26 +51,9 @@ async def start(client, message):
     if message.from_user.id in users: print("user in db");
     else:
         users[message.from_user.id] = "[]"
-        print("user not in db, Added", users);
-        await logger(client, message, "New user!")
+        print("user not in db, Added", message.from_user.id);
+        await logger(client, message, "New user!!!")
         bookup()
-
-def homans(inte):
-    # Extracted from moneroocean js
-    # idk how tf it works but it does
-    # removed wierd checks like ===
-    # i mean why would you check the type??
-    if inte < 0: inte = 0
-    u = "/s"
-    for un in hashUnits:
-        if inte >= hashUnits[un]:
-           inte = inte/hashUnits[un]
-           u = f"{un}{u}"
-           break
-    if inte == 0: u = "H/s"
-    inte = round(inte, 2)
-    print(inte, u)
-    return(f"{inte} {u}")
 
 @moon.on_message(filters.command("help"))
 async def help(client, message):
@@ -122,7 +112,7 @@ async def getkey(client, message):
        await m.edit_text(f"User in db {key}")
 
 @moon.on_message(filters.command("ping"))
-async def main(client, message):
+async def main(client, message, GRAPH=False):
     if not message.from_user.id in usrWallets:
        await message.reply_text("**Sorry i don't have your wallet address** to fetch your mining stats, see /help")
        await message.reply_sticker(stk1)
@@ -143,8 +133,16 @@ async def main(client, message):
        stats = json.loads(stats.text)
        miners= requests.get(f"https://api.moneroocean.stream/miner/{wallet}/chart/hashrate/allWorkers", headers=statsheader)
        miners= json.loads(miners.text)
-       totalMiners = len(miners)-1
-       paidamt = 0
+       if GRAPH:
+          data = apiformating(miners['global'], len(miners['global']), starttime())
+          if not data:
+             #GRAPH = False
+             graph="assets/no-data-graph.jpg"
+             print('no graph')
+          else: graph= cgraph(data,homans(data[0]['hsh2']),homans(data[0]['hsh']),message.from_user.id)
+
+       totalMiners = len(miners)-1 # api always gives a total item contains all miners combined
+       paidamt = 0.0
        if stats['amtPaid'] != 0: paidamt = format(stats['amtPaid']/1000000000000, '.12f')
        minersName = []
        for i in range(len(miners)):
@@ -153,10 +151,13 @@ async def main(client, message):
        if len(minersName) ==0: minersName = 'No miners Alive'
        else: minersName = ", ".join(minersName)
 
+       if GRAPH: button = InlineKeyboardMarkup([[InlineKeyboardButton("📬 PING", callback_data="PINGMEWITHGRAPH")]])
+       else: button = InlineKeyboardMarkup([[InlineKeyboardButton("📬 PING", callback_data="PINGME")], [InlineKeyboardButton("📈 GRAPH", callback_data="PINGMEWITHGRAPH")]])
+
     except Exception as e:
        await stkr.delete()
        await messg.edit_text(msg0, str(e))
-       await logger(client, message, "got this error")
+       await logger(client, message, f"got this error {str(e)}")
        return
 
     msg = f"""
@@ -169,12 +170,17 @@ async def main(client, message):
 **XMR mined:** {format(stats['amtDue']/1000000000000, '.12f')} XMR
 **Paid XMR:** {paidamt} XMR"""
     await stkr.delete()
-    await messg.edit_text(msg)
+    if GRAPH:
+       await messg.delete()
+       await message.reply_document(graph,caption=msg,reply_markup=button)
+       #os.remove(graph)
+    else: await messg.edit_text(msg, reply_markup = button)
 
 @moon.on_message(filters.text)
 async def wallet(client, message):
-    # extracted from moneroocean js regex
+    # extracted/ported from moneroocean js regex
     Wpattern = "^[4|8]{1}([A-Za-z0-9]{105}|[A-Za-z0-9]{94})$"
+    # i did these, getting better with regex :-D
     SwitchPatt = "^[💰]{1}[4|8]{1}[A-Za-z0-9]{7}[*]{4}[A-Za-z0-9]{8}$"
     DelPatt =    "^[4|8]{1}[A-Za-z0-9]{7}[*]{4}[A-Za-z0-9]{8}[💰]{1}$"
     text = message.text
@@ -281,6 +287,12 @@ async def wallet(client, message):
        await donate(client, message)
        return
 
+    if text.lower().replace("/", "") == "sauce":
+       await message.reply_text(sauce)
+       await message.reply_sicker(stk7)
+       return
+
+
 @moon.on_callback_query()
 async def calls(client, message):
     data = message.data
@@ -290,6 +302,19 @@ async def calls(client, message):
        await message.message.reply_sticker(stk10)
        await message.message.reply_sticker(stk11)
        await message.message.reply_sticker(stk12)
+       return
+
+    if "PINGME" in data:
+       # dirty way faking the messeage id
+       # technically the bot is the sender
+       # we patch the sender id with the user'sID
+       # i'm too lazy to use effective.from_user
+       # this works fine.
+       message.message.from_user.id =  message.message.chat.id
+       await message.message.delete() #delete old data
+       if data == "PINGMEWITHGRAPH": await main(client, message.message, True) #graph = true
+       else: await main(client, message.message, False) #fetch new data
+       return
 
 def getName(client, message):
     user_id = message.from_user.id
@@ -307,6 +332,7 @@ def getName(client, message):
     return name
 
 async def logger(client, message, msg, text=""):
+    if not logGroup: return
     ms = msg + text + f"\n\n{message.from_user.first_name} {message.from_user.last_name} @{message.from_user.username} {message.from_user.id}"
     await client.send_message(logGroup, ms, disable_web_page_preview=True)
 

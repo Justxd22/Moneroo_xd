@@ -2,7 +2,12 @@
 *.session
 .cache
 script_min.js
+*.json
+*.png
+*.txt
+ntcw
 mooproj.txt
+ostuff.py
 stuff.py2
 build
 log.txt
@@ -16,6 +21,7 @@ tes.py
 # Directories
 __pycache__/
 Temp/
+tests/
 temp/
 .cache/
 */__pycache__/

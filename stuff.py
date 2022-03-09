@@ -4,7 +4,7 @@ from pyrogram.types import ReplyKeyboardMarkup
 token = os.getenv("token", "")
 app_id = os.getenv("app_id", "")
 app_hash = os.getenv("app_hash", "")
-logGroup = int(os.getenv("logGroup", ""))
+logGroup = os.getenv("logGroup", "")
 redisURI = os.getenv("redisURI", "")
 redisPASS = os.getenv("redisPASS", "")
 
@@ -17,6 +17,7 @@ print(na)
 print("My PID is:", os.getpid())
 
 if len(str(token)) < 5: print("please put your token in env"); sys.exit(1)
+if logGroup: logGroup = int(logGroup);
 
 keybd = ReplyKeyboardMarkup([
      ['📬Ping📜', '⁉️Help', '💰Wallet'],
@@ -130,6 +131,13 @@ donateMsg = """
 Thanks Kind Miner %s
 """
 
+sauce = """
+**Are you a dev?
+
+sauce code  : github.com/justxd22/Moneroocean_xd
+Hop on my github: github.com/justxd22
+(✨ support me by staring 🌟)**"""
+
 msg0 = "**OoPs, pLz send Vaild wallet address** address not found"
 msg1 = "**4o4 not found** looks like the website is down??"
 msg2 = "**Hold tight!**"
@@ -156,5 +164,23 @@ statsheader = {
 
 donwallet = "433CbZXrdTBQzESkZReqQp1TKmj7MfUBXbc8FkG1jpVTBFxY9MCk1RXPWSG6CnCbqW7eiMTEGFgbHXj3rx3PxZadPgFD3DX"
 
+# extracted from moneroocean js
 hashUnits = {'TH': 1000000000000, 'GH': 1000000000,
              'MH': 1000000, 'KH': 1000, 'H': 1}
+
+def homans(inte):
+    # Extracted/ported from moneroocean js
+    # idk how tf it works but it does
+    # removed wierd checks like ===
+    # i mean why would you check the type??
+    if inte < 0: inte = 0
+    u = "/s"
+    for un in hashUnits:
+        if inte >= hashUnits[un]:
+           inte = inte/hashUnits[un]
+           u = f"{un}{u}"
+           break
+    if inte == 0: u = "H/s"
+    inte = round(inte, 2)
+    print(inte, u)
+    return(f"{inte} {u}")

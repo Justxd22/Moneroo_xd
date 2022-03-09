@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://telegra.ph/file/8ad14778b61c467438095.jpg" width="200" height="200"  alt="logo" />
+<img src="https://telegra.ph/file/61b92100e63e4bc6efd6e.jpg" width="200" height="200"  alt="logo" />
 </div>
 
 # Moneroocean _XD
@@ -11,6 +11,8 @@ Code for the telegram bot [@Moneroocean_XD_bot](https://t.me/Moneroocean_XD_bot)
 - Uses Moneroocean's API
 - very low hardware/network usage
 - Supports Heroku and railway 
+- Completely safe no third-party libs used
+  all data collected safe (check requr.txt) 
 
 enjoy :)
 
@@ -32,3 +34,5 @@ enjoy :)
 
 [@pyrogram](https://github.com/pyrogram/pyrogram) - telegram bot api
 @ Moneroocean for their amazing pool
+
+pm on telegram for any queries [@Pine_Orange](t.me/Pine_Orange) or [@xd2222](t.me/xd2222)
