@@ -2,3 +2,5 @@ requests
 pyrogram
 tgcrypto
 redis
+matplotlib
+mplcyberpunk
