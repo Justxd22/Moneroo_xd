@@ -26,8 +26,8 @@ def plots(data, hs2, hs, filename):
         nums.append(data[i]['hsh2'])
         nums2.append(data[i]['hsh'])
 
-    plt.rcParams['figure.dpi'] = 600
-    plt.rcParams['savefig.dpi'] = 600
+    plt.rcParams['figure.dpi'] = 900
+    plt.rcParams['savefig.dpi'] = 900
     plt.style.use("cyberpunk")
     fig = plt.figure()
     ax = plt.gca()
@@ -169,7 +169,7 @@ def clegend(hs2, hs, filename):
 
     fig.canvas.draw()
     bbox  = legend.get_window_extent().padded(2).transformed(fig.dpi_scale_trans.inverted())
-    fig.savefig(filename, dpi=600, transparent=True, bbox_inches=bbox)
+    fig.savefig(filename, dpi=900, transparent=True, bbox_inches=bbox)
     plt.close(fig)
     return filename
 
