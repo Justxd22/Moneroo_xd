@@ -3,4 +3,4 @@ pyrogram
 tgcrypto
 redis
 matplotlib
-mplcyberpunk
+./libs/mplcyberpunk-v0.4.0.dev64c78fd0_dirty-py3-none-any.whl
