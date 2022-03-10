@@ -96,7 +96,7 @@ def plots(data, hs2, hs, filename):
 #    print("The pixel coordinates are: ",xpix2, ypix2)
 
 
-    mplcyberpunk.add_glow_effects()
+    mplcyberpunk.add_glow_effects(gradientFill=True)
     plt.savefig(f'./graphs/{filename}PLOT.png', bbox_inches='tight') #, dpi=300)
     plt.close(fig)
 #    plt.show()
