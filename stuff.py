@@ -1,5 +1,5 @@
 import os, datetime, sys
-from pyrogram.types import ReplyKeyboardMarkup
+from pyrogram.types import ReplyKeyboardMarkup, InlineKeyboardMarkup,InlineKeyboardButton
 
 token = os.getenv("token", "")
 app_id = os.getenv("app_id", "")
@@ -23,6 +23,13 @@ keybd = ReplyKeyboardMarkup([
      ['📬Ping📜', '⁉️Help', '💰Wallet'],
      ['💸Donate❤️', '😊Thanks', '👀Who?']], resize_keyboard=True)
 
+pools = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Moneroocean", callback_data="pool|MO"),
+         InlineKeyboardButton("C3pool", callback_data="pool|C3")],
+        [InlineKeyboardButton("Nanopool", callback_data="pool|NANO"),
+         InlineKeyboardButton("SupportXMR", callback_data="pool|SPXMR")],
+        [InlineKeyboardButton("MineXMR☹️", callback_data="pool|minexmr"),
+         InlineKeyboardButton("👀Not listed?", callback_data="pool|report")]])
 
 stk0 = "CAADBAADrgcAAnILQFPgjUtxHDj-oQI"
 stk1 = "CAADBAADlQoAAo8RQFOWkvFydBKJlwI"
@@ -141,7 +148,7 @@ Hop on my github: github.com/justxd22
 msg0 = "**OoPs, pLz send Vaild wallet address** address not found"
 msg1 = "**4o4 not found** looks like the website is down??"
 msg2 = "**Hold tight!**"
-msg3 = "****"
+msg3 = "**OoPs, s0mETHing wENT wRONg**"
 
 logger1 = "**New user!!**"
 logger2 = "**User May have donated**"
@@ -163,24 +170,3 @@ statsheader = {
 
 
 donwallet = "433CbZXrdTBQzESkZReqQp1TKmj7MfUBXbc8FkG1jpVTBFxY9MCk1RXPWSG6CnCbqW7eiMTEGFgbHXj3rx3PxZadPgFD3DX"
-
-# extracted from moneroocean js
-hashUnits = {'TH': 1000000000000, 'GH': 1000000000,
-             'MH': 1000000, 'KH': 1000, 'H': 1}
-
-def homans(inte):
-    # Extracted/ported from moneroocean js
-    # idk how tf it works but it does
-    # removed wierd checks like ===
-    # i mean why would you check the type??
-    if inte < 0: inte = 0
-    u = "/s"
-    for un in hashUnits:
-        if inte >= hashUnits[un]:
-           inte = inte/hashUnits[un]
-           u = f"{un}{u}"
-           break
-    if inte == 0: u = "H/s"
-    inte = round(inte, 2)
-    print(inte, u)
-    return(f"{inte} {u}")
