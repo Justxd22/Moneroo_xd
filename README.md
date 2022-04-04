@@ -5,7 +5,7 @@
 # Moneroocean _XD
 
 
-Code for the telegram bot [@Moneroocean_XD_bot](https://t.me/Moneroocean_XD_bot)
+Code for the telegram bot [@Moneroo_XD_bot](https://t.me/Moneroo_XD_bot)
 
 - based on the pyrogram lib
 - Uses Multiple pools API

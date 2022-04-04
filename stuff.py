@@ -89,7 +89,7 @@ Note:Your public wallet address
 aboutMsg = """
 Hello **%s fello miner**,
 
-I'm **@Moneroocean_xd_bot** 👋
+I'm **@Moneroo_xd_bot** 👋
 **Project** By **@Pine_Orange** also know as **@xd2222**
 
 **Info:**
@@ -154,19 +154,5 @@ logger1 = "**New user!!**"
 logger2 = "**User May have donated**"
 logger3 = "**User is Happy** says thanks "
 logger4 = "**User is curious**"
-
-statsheader = {
-       'Connection': 'keep-alive',
-       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
-       'Content-Type': 'application/json',
-       'Accept': '*/*',
-       'Origin': 'https://moneroocean.stream',
-       'Sec-Fetch-Site': 'same-site',
-       'Sec-Fetch-Mode': 'cors',
-       'Sec-Fetch-Dest': 'empty',
-       'Referer': 'https://moneroocean.stream/',
-       'Accept-Language': 'en-US,en;q=0.9',
-}
-
 
 donwallet = "433CbZXrdTBQzESkZReqQp1TKmj7MfUBXbc8FkG1jpVTBFxY9MCk1RXPWSG6CnCbqW7eiMTEGFgbHXj3rx3PxZadPgFD3DX"
