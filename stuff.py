@@ -60,7 +60,7 @@ I'm very easy to use
 
 **Steps**
 1.Copy your public Wallet address
-  from Moneroocean.com
+  exmp: from Moneroocean.com
 2.Paste me your wallet address
 3.Enjoy
 
@@ -73,13 +73,13 @@ Note:Your public wallet address
 **Commands**
  •/start - sTaRtMe
  •/help - show this menu
- •/ping - Ping Moneroocean and return Stuff
+ •/ping - Ping ur pool and return Stuff
  •/donate - ❤️ Reward My dev
  •/about - About the dev
  •/sauce - See How i work (git repo)
 
 **Buttons**
- •Ping - Ping Moneroocean and return Stuff
+ •Ping - Ping ur pool and return Stuff
  •Help - Show help
  •Wallet - Select/add/delete Wallet Addresses
  •Thanks - Say thanks to me
