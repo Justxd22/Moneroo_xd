@@ -8,11 +8,11 @@
 Code for the telegram bot [@Moneroocean_XD_bot](https://t.me/Moneroocean_XD_bot)
 
 - based on the pyrogram lib
-- Uses Moneroocean's API
+- Uses Multiple pools API
 - very low hardware/network usage
 - Supports Heroku and railway 
 - Completely safe no third-party libs used
-  all data collected safe (check requr.txt) 
+  all data collected is safe (check requr.txt) 
 
 enjoy :)
 
@@ -33,6 +33,5 @@ enjoy :)
 # Credits
 
 [@pyrogram](https://github.com/pyrogram/pyrogram) - telegram bot api
-@ Moneroocean for their amazing pool
 
 pm on telegram for any queries [@Pine_Orange](t.me/Pine_Orange) or [@xd2222](t.me/xd2222)
