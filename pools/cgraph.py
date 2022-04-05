@@ -179,7 +179,7 @@ def plots(data, hs2, hs, filename):
     return f"pools/graphs/{filename}.png"
 
 def clegend(hs2, hs, filename):
-    palette = dict(zip([f'Pay hashrate - {hs2}', f'Raw  hashrate - {hs}'], ['#c803ff', '#00ff41']))
+    palette = dict(zip([f'Pay hashrate - {hs2}', f'Raw  hashrate - {hs}'], ['#00ff41', '#c803ff']))
 
 #    plt.rcParams['text.color'] = '0'
     handles = [plt.Line2D([], [], color=c, label=l) for l, c in palette.items()]
