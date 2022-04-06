@@ -145,7 +145,7 @@ def plots(data, hs, filename):
     return f"pools/graphs/{filename}.png"
 
 def clegend(hs, filename):
-    palette = dict(zip([f'Hashrate - {hs}'], [['#00ff41']))
+    palette = dict(zip([f'Hashrate - {hs}'], ['#00ff41']))
 
 #    plt.rcParams['text.color'] = '0'
     handles = [plt.Line2D([], [], color=c, label=l) for l, c in palette.items()]
