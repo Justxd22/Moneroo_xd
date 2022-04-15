@@ -1,6 +1,6 @@
 import requests, json, re, os
-from pools.cgraph import apiformating, starttime, homans
-from pools.cgraph import plots as cgraph
+from pools.util.cgraph import apiformating, starttime, homans
+from pools.util.cgraph import plots as cgraph
 from stuff  import msg0, msg1, msg2, msg3, stk4
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -67,7 +67,7 @@ async def mopool(client, message, wallet, GRAPH=False):
        else: button = InlineKeyboardMarkup([[InlineKeyboardButton("📬 PING", callback_data="PINGME")], [InlineKeyboardButton("📈 GRAPH", callback_data="PINGMEWITHGRAPH")]])
 
    except Exception as e:
-       await messg.edit_text(msg3, str(e))
+       await messg.edit_text(msg3 + " <code>" + str(e) + "</code>")
        await stkr.delete()
       #  await logger(client, message, f"got this error {str(e)}")
        return

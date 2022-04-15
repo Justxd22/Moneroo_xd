@@ -2,10 +2,14 @@ import os, time, redis
 from stuff import redisURI, redisPASS
 
 class Redis:
-    def __init__(self):
-        self.db_uri = redisURI
-        self.db_pass = redisPASS
-        if self.db_uri == "" or self.db_pass == "":
+    def __init__(self, u=None,p=None):
+        if u:
+           self.db_uri = u
+           self.db_pass = p
+        else:
+           self.db_uri = redisURI
+           self.db_pass = redisPASS
+        if self.db_uri == "":
             print("Please set REDIS_URI and REDIS_PASSORD")
             exit()
 
@@ -18,13 +22,12 @@ class Redis:
             err += "Your REDIS_URI should start with redis.xyz. Quitting...\n"
 
         self.db_uri = self.db_uri.replace("\n", "").replace(" ", "")
-        self.db_pass = self.db_pass.replace("\n", "").replace(" ", "")
+        try: self.db_pass = self.db_pass.replace("\n", "").replace(" ", "")
+        except: pass
         self.db_uri = self.db_uri.split(":")
         if err:
             print(err)
             exit(1)
-
-        time.sleep(1.5)
         return redis.Redis(
             host=self.db_uri[0],
             port=self.db_uri[1],
@@ -34,10 +37,11 @@ class Redis:
 
 
 
-def redis_connection():
-    init_db = Redis()
+def redis_connection(u=None,p=None):
+    if u: init_db = Redis(u,p)
+    else: init_db = Redis()
     our_db = init_db.getConnection()
-    time.sleep(5)
+    time.sleep(1.5)
     try:
         our_db.ping()
     except BaseException:

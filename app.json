@@ -1,7 +1,7 @@
 {
-  "name": "Moneroocean_XD",
-  "description": "Bot to fetch stats from moneroocean api",
-  "repository": "https://github.com/Justxd22/Moneroocean_XD",
+  "name": "Moneroo_XD",
+  "description": "",
+  "repository": "https://github.com/Justxd22/Moneroo_XD",
   "logo": "https://telegra.ph/file/8ad14778b61c467438095.jpg",
   "keywords": [
     "Moneroo","XD"
@@ -20,8 +20,12 @@
     "description": "Your app hash"
   },
   "logGroup": {
-    "required": true,
-    "description": "Group to be used for logging"
+    "required": false,
+    "description": "Group to be used for logging, leave empty to disable"
+  },
+  "pushNOTFI": {
+    "required": false,
+    "description": "True/False enable or disable push notifications"
   },
   "redisURI": {
     "required": true,

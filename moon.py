@@ -1,35 +1,40 @@
-import requests, json, re
+import requests, json, re, asyncio, time
+from threading import Thread as thrd
 from random import randint
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
 from stuff import *
 from database import redis_connection
+from pools.util.timef import timeinletters as timef
 from pools.mo import mopool
 from pools.c3 import c3pool
 from pools.nano import nanopool
 from pools.spxmr import supportxmrpool
 from pools.minexmr import minexmrpool
+from pools.p2pool import p2pool
 
-db = redis_connection()
-
+db   = redis_connection()
 moon = Client("moon_XD",
       api_id = app_id, api_hash = app_hash,
       bot_token = token)
 
 usrWallets = {}
 allWallets = {}
-users = {}
+users      = {}
+p2pusers   = {}
 
 def bookup(task=""):
     if task == "startup":
-       #restore dict from db
+       # restore dict from db
        usrwall = db.get('usrwall')
        allwall = db.get('allwall')
-       usrs = db.get('usrs')
-       global usrWallets; global allWallets; global users;
+       usrs    = db.get('usrs')
+       p2pusrs = db.get('p2pusrs')
+       global usrWallets; global allWallets; global users; global p2pusers
        usrWallets = json.loads(usrwall, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
        allWallets = json.loads(allwall, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
        users      = json.loads(usrs, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
+       p2pusers   = json.loads(p2pusrs, object_hook=lambda d: {int(k) if k.lstrip('-').isdigit() else k: v for k, v in d.items()})
        print("restored backup")
        return
        # #copied from stackoverflow
@@ -41,9 +46,11 @@ def bookup(task=""):
     usrwall = json.dumps(usrWallets)
     allwall = json.dumps(allWallets)
     usrs    = json.dumps(users)
+    p2pusrs = json.dumps(p2pusers)
     db.set('usrwall', usrwall)
     db.set('allwall', allwall)
     db.set('usrs', usrs)
+    db.set('p2pusrs', p2pusrs)
     print('backup done')
 
 @moon.on_message(filters.command("start"))
@@ -51,12 +58,11 @@ async def start(client, message):
     name = getName(client, message)
     await message.reply_text(startMsg%name, reply_markup = keybd)
     await message.reply_sticker(stk5)
-
     if not message.from_user.id in users:
-        users[message.from_user.id] = "[]"
-        print("user not in db, Added", message.from_user.id);
-        await logger(client, message, "New user!!!")
-        bookup()
+       users[message.from_user.id] = "[]"
+       await logger(client, message, "New user!!!")
+       print("user not in db, Added", message.from_user.id)
+       bookup()
 
 @moon.on_message(filters.command("help"))
 async def help(client, message):
@@ -68,10 +74,9 @@ async def help(client, message):
 async def thank(client, message):
     ran = randint(0, 1)
     if ran == 1:
-        await message.reply_text("**You are welcome**", reply_markup = keybd)
+       await message.reply_text("**You are welcome**", reply_markup = keybd)
     else:
-        await message.reply_text("**it's my duty**", reply_markup = keybd)
-
+       await message.reply_text("**it's my duty**", reply_markup = keybd)
     await message.reply_sticker(stk7)
     await logger(client, message, logger3)
 
@@ -138,9 +143,20 @@ async def main(client, message, GRAPH=False):
     elif p == 'NANO': await nanopool(client,message,w)
     elif p == 'SPXMR': await supportxmrpool(client,message,w,GRAPH)
     elif p == 'minexmr': await minexmrpool(client,message,w)
+    elif p == 'p2pool': # the following check if user is in the p2p notify list
+       if message.from_user.id in p2pusers:
+          if p2pusers[message.from_user.id]['w'] == w and p2pusers[message.from_user.id]['p'] == p:
+             await p2pool(client,message,w,NOTF='ON')
+          else: await p2pool(client,message,w,NOTF='OFF')
+       else: await p2pool(client,message,w,NOTF='OFF')
+    elif p == 'minip2p':
+       if message.from_user.id in p2pusers:
+          if p2pusers[message.from_user.id]['w'] == w and p2pusers[message.from_user.id]['p'] == p:
+             await p2pool(client,message,w,POOL='mini.',NOTF='ON')
+          else: await p2pool(client,message,w,POOL='mini.',NOTF='OFF')
+       else: await p2pool(client,message,w,POOL='mini.',NOTF='OFF')
     return
-
-
+    # p2p list is used to notify users with share updates
 
 @moon.on_message(filters.text)
 async def wallet(client, message):
@@ -199,8 +215,8 @@ async def wallet(client, message):
                  try: usrWallets[message.from_user.id] = allWallets[message.from_user.id][0]
                  except: pass
               break
-#       print(wallid, allWallets)
-      #  allWallets[message.from_user.id].remove(wallid)
+       if pool == "p2pool" or pool == "minip2p":
+          if message.from_user.id in p2pusers: del p2pusers[message.from_user.id]
        msg = f"**Alright removed your wallet**\nAddress: <code>{wallid}</code>\nPool: <code>{pool}</code>"
        await message.reply_text(msg, reply_markup = keybd)
        bookup()
@@ -246,7 +262,6 @@ async def wallet(client, message):
     if text.lower().replace("<", "").replace(">", "") == "back":
        await message.reply_text("**Hello fellow miner,**\n What do you wanna do?", reply_markup = keybd)
        return
-
     if text == "⁉️Help":
        await help(client, message)
        return
@@ -259,7 +274,6 @@ async def wallet(client, message):
     if text == "💸Donate❤️":
        await donate(client, message)
        return
-
     if text.lower().replace("/", "") == "sauce":
        await message.reply_text(sauce)
        await message.reply_sticker(stk7)
@@ -286,8 +300,44 @@ async def calls(client, message):
        await message.answer()
        message.message.from_user.id =  message.message.chat.id
        await message.message.delete() #delete old data
-       if data == "PINGMEWITHGRAPH": await main(client, message.message, True) #graph = true
+       if data == "PINGMEWITHGRAPH": await main(client, message.message, True)
        else: await main(client, message.message, False) #fetch new data
+       return
+
+    if "NOTIFYME" in data:
+       message.message.from_user.id =  message.message.chat.id
+       try:
+          w = usrWallets[message.message.from_user.id]['address']
+          p = usrWallets[message.message.from_user.id]['pool']
+       except Exception as e:
+          await message.message.reply_text(msg0 + " <code>" + str(e) + "</code>")
+          await logger(client, message.message, f"got this error {str(e)}")
+          return
+
+       print(p,w)
+       if p != "p2pool" and p != "minip2p":
+          msg = "**This feature is for P2pool and Minip2pool only send me your wallet address if you're using p2pool**"
+          await message.message.reply_text(msg)
+          await message.answer()
+          return
+
+       if "OFF" in data and message.message.from_user.id in p2pusers:
+          del p2pusers[message.message.from_user.id]
+          button = InlineKeyboardMarkup([[InlineKeyboardButton("📬 PING", callback_data="PINGME")], [InlineKeyboardButton(f"📳 Notify me OFF", callback_data="NOTIFYME")]])
+          msg = f"**Alright Notifications Disabled\n\nPlease note this is still under beta,**\nplease report any bugs/feedback you have\n\nWallet: <code>{w}</code>\nPool: <code>{p}</code>"
+          await message.message.edit_reply_markup(button)
+          await message.message.reply_text(msg)
+          await message.answer('Notifications Disabled!')
+          bookup()
+          return
+
+       p2pusers[message.message.from_user.id] = {'p': p, 'w': w}
+       button = InlineKeyboardMarkup([[InlineKeyboardButton("📬 PING", callback_data="PINGME")], [InlineKeyboardButton(f"📳 Notify me ON", callback_data="NOTIFYME")]])
+       msg = f"**Alright, you will be notified once you make a share or get a payment\n\nPlease note this is still under beta,**\nFor now you can get notifications for one address only, i may add support for multi addresses\nplease report any bugs/feedback you have\n\nWallet: `{w}`\nPool: `{p}`"
+       await message.message.edit_reply_markup(button)
+       await message.message.reply_text(msg)
+       await message.answer('Notifications Enabled!')
+       bookup()
        return
 
     if "pool" in data:
@@ -296,7 +346,6 @@ async def calls(client, message):
           msg = "**Alright you can suggest a pool, my dev will try adding it**\n\n**Notes:** The pool should have a public api\nReply the pool name and domain name, also provide any additional details, Or you can ignore this message and directly pm my dev @_xd2222 or @Pine_Orange"
           await message.message.delete()
           msgg = await message.message.reply_text(msg, reply_to_message_id=message.message.reply_to_message_id,reply_markup=ForceReply(True, "Pool name?"))
-#          print(msgg)
           return
 
        msgid = message.message.reply_to_message.message_id
@@ -315,17 +364,23 @@ async def calls(client, message):
               await message.message.reply_sticker(stk2)
               return
 
-       await message.answer()
+       await message.answer('wallet saved!')
        usrWallets[message.message.from_user.id] = {'address':walletADR,'pool':pool}
        allWallets[message.message.from_user.id].append({'address':walletADR,'pool':pool})
-       msg = f"**I saved your wallet** you can start using me now 👍 try the buttons\n\nYour Address: <code>{walletADR}</code>\nPool: <code>{pool}</code>"
+       msg = ''
+       if pool == 'minexmr':
+          msg += """
+🔴🔴🔴⚠️ATTENTION⚠️🔴🔴🔴
+MINEXMR users you need to switch to another pool ASAP,
+As minexmr hashrate is very high nearly [50% of the network,](https://miningpoolstats.stream/monero)
+If it reaches 51% xmr might be at risk [full details here,](https://www.investopedia.com/terms/1/51-attack.asp)
+High hashrate doesn't mean more profits, you may lose all your xmr!!!!
+🔴🔴🔴⚠️ATTENTION⚠️🔴🔴🔴
+\n\n\n\n"""
+       msg += f"**I saved your wallet** you can start using me now 👍 try the buttons\n\nYour Address: <code>{walletADR}</code>\nPool: <code>{pool}</code>"
        await message.message.edit_text(msg, reply_markup = keybd)
        bookup()
        return
-
-
-       print('new w add from cb:', pool, walletADR)
-
 
 
 def getName(client, message):
@@ -349,5 +404,126 @@ async def logger(client, message, msg, text=""):
     ms = msg + text + f"\n\n{message.from_user.first_name} {message.from_user.last_name} @{message.from_user.username} {message.from_user.id}"
     await client.send_message(logGroup, ms, disable_web_page_preview=True)
 
+async def pushNOTFI():
+    if not pushNOTIFICATIONS: return
+    print('starting push notifications service')
+    await asyncio.sleep(5) # wait for client to start
+    await moon.send_message(logGroup,"**Started push Notifications service**")
+    p2ptime = time.time()
+    minitime = time.time() + 90
+    lasth = 0 # last height is the last share from the previous request
+    nshares = 50 # number of shares to fetch
+    mlasth = 0; mnshares = 50; # for minip2p
+    while 1: # the most accurate timer ever no sleep no async.sleep no shit
+        if int(time.time()) - int(p2ptime) >= 60: # use unix time to check how much time passed
+           if len(p2pusers) == 0: continue
+           print('new req with', nshares, lasth)
+           shares  = requests.get(f'https://p2pool.observer/api/shares?limit={nshares}', headers=p2pheaders)
+           shares  = json.loads(shares.text)
+           nshares = []; index = None
+           if lasth == 0:                                # if this is first run
+              lasth=shares[0]['height']; nshares=shares; # treat all shares as new
+           else:
+              for i in shares:               # search for last height
+                  if i['height'] == lasth:   # get index
+                     index = shares.index(i) # use index to get only new shares
+                     break                   # BREAK FOR NOT WHILE
+           if not index and nshares == []:
+              if nshares >= 300: nshares = shares
+              else:
+                 nshares += 50            # if we didn't find last height that means
+                 continue                 # we missed a lot of shared get last 100+ shares
+           elif index == 0: continue      # last height is still the last height continue
+           else: nshares = shares[:index] # new shares after last height we checked
+           nshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
+           print('new shares:', len(nshares))
+           userids = list(p2pusers.keys())
+           for i in nshares:
+             for ii in userids:
+               if i['miner'] == p2pusers[ii]['w'] and p2pusers[ii]['p'] == 'p2pool':
+                  u = ii
+                  a = "💰" + i['miner'][:6] + "&ast;&ast;&ast;" + i['miner'][-6:] + " p2pool"
+                  h = i['height']
+                  r = i['coinbase']['reward']/1000000000000
+                  c = i['coinbase']['id']+"/"+i['miner']+"/"+i['coinbase']['private_key']
+                  d = int(i['difficulty'], 16)
+                  t = timef(i['timestamp'])
+                  id= i['id']
+                  msg = f"""
+**YOU Just found a SHARE!!**\n
+**Time:** {t}
+**Height:** <a href="https://p2pool.observer/share/{id}">{h}</a>
+**Difficulty:** {d}
+**Reward:** <a href="https://www.exploremonero.com/receipt/{c}">{r}</a> XMR
+"""
+                  if i['main']['found']: msg += f"**Shared in Mainchain!**\n**Block:**{i['main']['height']}"
+                  msg += f"**Address:** <code>{a}</code>"
+                  msg += "\n\nYou can stop this alerts by switching to the address above and turnoff NotifyMe"
+                  msg += "\nThis feature is under beta if you think there was a mistake please report see /help"
+                  await moon.send_message(u, msg, disable_web_page_preview=True)
+           lasth = nshares[-1]['height']; nshares = 50; # last item is the newest height
+           p2ptime = time.time()
+           continue
+        elif int(time.time()) - int(minitime) >= 60: # minip2p
+           if len(p2pusers) == 0: continue
+           print('new mini req with', mnshares, mlasth)
+           shares  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshares}', headers=p2pheaders)
+           shares  = json.loads(shares.text)
+           mnshares  = []; index   = None
+           if mlasth == 0:                                 # if this is first run
+              mlasth=shares[0]['height']; mnshares=shares; # treat all shares as new
+           else:
+              for i in shares:               # search for last height
+                  if i['height'] == mlasth:  # get index
+                     index = shares.index(i) # use index to get only new shares
+                     break                   # BREAK FOR NOT WHILE
+           if not index and mnshares == []:
+              if mnshares >= 300: mnshares = shares
+              else:
+                 mnshares += 50      # if we didn't find last height that means
+                 continue            # we missed a lot of shared get last 100+ shares
+           elif index == 0: continue # last height is still the last height continue
+           else: mnshares = shares[:index] # new shares after last height we checked
+           mnshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
+           print('new mini shares:', len(mnshares))
+           userids = list(p2pusers.keys())
+           for i in mnshares:
+             for ii in userids:
+               if i['miner'] == p2pusers[ii]['w'] and p2pusers[ii]['p'] == 'minip2p':
+                  u = ii
+                  a = "💰" + i['miner'][:6] + "&ast;&ast;&ast;" + i['miner'][-6:] + " minip2p"
+                  h = i['height']
+                  r = i['coinbase']['reward']/1000000000000
+                  c = i['coinbase']['id']+"/"+i['miner']+"/"+i['coinbase']['private_key']
+                  d = int(i['difficulty'], 16)
+                  t = timef(i['timestamp'])
+                  id= i['id']
+                  msg = f"""
+**YOU Just found a SHARE!!**\n
+**Time:** {t}
+**Height:** <a href="https://mini.p2pool.observer/share/{id}">{h}</a>
+**Difficulty:** {d}
+**Reward:** <a href="https://www.exploremonero.com/receipt/{c}">{r}</a> XMR
+"""
+                  if i['main']['found']: msg += f"**Shared in Mainchain!**\n**Block:**{i['main']['height']}"
+                  msg += f"**Address:** <code>{a}</code>"
+                  msg += "\n\nYou can stop this alerts by switching to the address above and turnoff NotifyMe"
+                  msg += "\nThis feature is under beta if you think there was a mistake please report see /help"
+                  await moon.send_message(u, msg, disable_web_page_preview=True)
+           mlasth = mnshares[-1]['height']; mnshares = 50; # last item is the newest height
+           minitime = time.time()
+           continue
+        else:
+           await asyncio.sleep(1) # sleep to slow down if checks every cpu cycle
+           continue
+
+def runasync(): # run thread in asyncio loop
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    asyncio.run(pushNOTFI())
+
 bookup("startup")
+tsk = thrd(target=runasync)
+tsk.daemon=True
+tsk.start()
 moon.run()

@@ -1,6 +1,6 @@
 import requests, json, re
-from pools.cgraph import apiformating, starttime, homans
-from pools.cgraph import plots as cgraph
+from pools.util.cgraph import apiformating, starttime, homans
+from pools.util.cgraph import plots as cgraph
 from stuff import msg0, msg1, msg2, msg3,  stk4
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -69,7 +69,7 @@ async def c3pool(c,m,w,GRAPH=False):
 
     except Exception as e:
        await stkr.delete()
-       await messg.edit_text(msg3, str(e))
+       await messg.edit_text(msg3 + " <code>" + str(e) + "</code>")
       #  await logger(c, m, f"got this error {str(e)}")
        return
     msg = f"""

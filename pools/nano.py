@@ -1,5 +1,5 @@
 import json, requests, time
-from pools.cgraph import homans
+from pools.util.cgraph import homans
 from stuff  import msg0, msg1, msg2, stk4
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -81,7 +81,7 @@ async def nanopool(c,m,w):
 
     except Exception as e:
        await stkr.delete()
-       await messg.edit_text(msg0 + "\n\n<code>" + str(e) + "</code>")
+       await messg.edit_text(msg3 + " <code>" + str(e) + "</code>")
       #  await logger(c, m, f"got this error {str(e)}")
        return
 

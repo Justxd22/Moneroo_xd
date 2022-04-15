@@ -5,19 +5,21 @@ token = os.getenv("token", "")
 app_id = os.getenv("app_id", "")
 app_hash = os.getenv("app_hash", "")
 logGroup = os.getenv("logGroup", "")
+pushNOTIFICATIONS = os.getenv("pushNOTFI","False")
 redisURI = os.getenv("redisURI", "")
 redisPASS = os.getenv("redisPASS", "")
 
 x = datetime.datetime.utcnow()
 i = x + datetime.timedelta(hours=3)
 y = i.strftime("%Y-%m-%d_%I:%M%P")
-d = i.strftime("%Y-%m-%d")
-na = d + ".txt"
-print(na)
+print(y)
 print("My PID is:", os.getpid())
 
 if len(str(token)) < 5: print("please put your token in env"); sys.exit(1)
 if logGroup: logGroup = int(logGroup);
+if pushNOTIFICATIONS == '': pushNOTIFICATIONS = False
+elif pushNOTIFICATIONS.lower() == 'false': pushNOTIFICATIONS = False
+elif pushNOTIFICATIONS.lower() == 'talse': pushNOTIFICATIONS = True
 
 keybd = ReplyKeyboardMarkup([
      ['📬Ping📜', '⁉️Help', '💰Wallet'],
@@ -28,6 +30,8 @@ pools = InlineKeyboardMarkup([
          InlineKeyboardButton("C3pool", callback_data="pool|C3")],
         [InlineKeyboardButton("Nanopool", callback_data="pool|NANO"),
          InlineKeyboardButton("SupportXMR", callback_data="pool|SPXMR")],
+        [InlineKeyboardButton("P2pool", callback_data="pool|p2pool"),
+         InlineKeyboardButton("MiniP2pool", callback_data="pool|minip2p")],
         [InlineKeyboardButton("MineXMR☹️", callback_data="pool|minexmr"),
          InlineKeyboardButton("👀Not listed?", callback_data="pool|report")]])
 
@@ -60,7 +64,7 @@ I'm very easy to use
 
 **Steps**
 1.Copy your public Wallet address
-  exmp: from Moneroocean.com
+  from Moneroocean.com
 2.Paste me your wallet address
 3.Enjoy
 
@@ -73,13 +77,13 @@ Note:Your public wallet address
 **Commands**
  •/start - sTaRtMe
  •/help - show this menu
- •/ping - Ping ur pool and return Stuff
+ •/ping - Ping Moneroocean and return Stuff
  •/donate - ❤️ Reward My dev
  •/about - About the dev
  •/sauce - See How i work (git repo)
 
 **Buttons**
- •Ping - Ping ur pool and return Stuff
+ •Ping - Ping Moneroocean and return Stuff
  •Help - Show help
  •Wallet - Select/add/delete Wallet Addresses
  •Thanks - Say thanks to me
@@ -89,7 +93,7 @@ Note:Your public wallet address
 aboutMsg = """
 Hello **%s fello miner**,
 
-I'm **@Moneroo_xd_bot** 👋
+I'm **@Moneroocean_xd_bot** 👋
 **Project** By **@Pine_Orange** also know as **@xd2222**
 
 **Info:**
@@ -154,5 +158,19 @@ logger1 = "**New user!!**"
 logger2 = "**User May have donated**"
 logger3 = "**User is Happy** says thanks "
 logger4 = "**User is curious**"
+
+
+p2pheaders = {
+       'Connection': 'keep-alive',
+       'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
+       'authority': 'p2pool.observer',
+       'cache-control': 'max-age=0',
+       'Content-Type': 'application/json',
+       'Accept': '*/*',
+       'Origin': 'https://p2pool.observer',
+       'Sec-Fetch-Site': 'same-site',
+       'Sec-Fetch-Mode': 'cors',
+       'Sec-Fetch-Dest': 'empty',
+       'Accept-Language': 'en-US,en;q=0.9'}
 
 donwallet = "433CbZXrdTBQzESkZReqQp1TKmj7MfUBXbc8FkG1jpVTBFxY9MCk1RXPWSG6CnCbqW7eiMTEGFgbHXj3rx3PxZadPgFD3DX"

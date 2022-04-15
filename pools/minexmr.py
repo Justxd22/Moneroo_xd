@@ -1,23 +1,7 @@
 import json, requests, time
-from pools.cgraph import homans
+from pools.util.cgraph import homans
 from stuff  import msg0, msg1, msg2, msg3, stk4
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
-
-# curl 'https://minexmr.com/api/main/user/stats?address=' \
-#   -H 'authority: minexmr.com' \
-#   -H 'user-agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36' \
-#   -H 'accept: */*' \
-#   -H 'sec-fetch-site: same-origin' \
-#   -H 'sec-fetch-mode: cors' \
-#   -H 'sec-fetch-dest: empty' \
-#   -H 'referer: https://minexmr.com/dashboard?address=84GBkwYDmat1PXdpY9rfoNLdxeXYvWwTYeJnwQd5L26FUSofuWnExGw3Sq7FuAG5qzDzGNosPegs5h6AiRJV8oGSRfjvwUE' \
-#   -H 'accept-language: en' \
-#   -H 'cookie: theme=dark; mining_address=84GBkwYDmat1PXdpY9rfoNLdxeXYvWwTYeJnwQd5L26FUSofuWnExGw3Sq7FuAG5qzDzGNosPegs5h6AiRJV8oGSRfjvwUE; recent_address=84GBkwYDmat1PXdpY9rfoNLdxeXYvWwTYeJnwQd5L26FUSofuWnExGw3Sq7FuAG5qzDzGNosPegs5h6AiRJV8oGSRfjvwUE' \
-#   --compressed
-
-#{"balance":"19093381437","thold":100000000000,"paid":null,"manp":null}
-#[{"hashrate":579.1135261064378,"hashes":"7927970971","expired":"24215266","invalid":"221264","lastShare":"1649104151"}]
 
 headers = {
      'authority': 'minexmr.com',
