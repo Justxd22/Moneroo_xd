@@ -6,6 +6,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceRepl
 from stuff import *
 from database import redis_connection
 from pools.util.timef import timeinletters as timef
+from pools.util.cgraph import homans
 from pools.mo import mopool
 from pools.c3 import c3pool
 from pools.nano import nanopool
