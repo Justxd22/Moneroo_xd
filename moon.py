@@ -411,8 +411,10 @@ async def pushNOTFI():
     await moon.send_message(logGroup,"**Started push Notifications service**")
     p2ptime = time.time()
     minitime = time.time() + 90
-    lasth = 0 # last height is the last share from the previous request
-    nshares = 50 # number of shares to fetch
+    xmrbeast = time.time() + 120
+    lwon  = None    # last winner
+    lasth = 0       # last height is the last share from the previous request
+    nshares = 50    # number of shares to fetch
     mlasth = 0; mnshares = 50; # for minip2p
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
         if int(time.time()) - int(p2ptime) >= 60: # use unix time to check how much time passed
@@ -512,6 +514,47 @@ async def pushNOTFI():
                   await moon.send_message(u, msg, disable_web_page_preview=True)
            mlasth = mnshares[-1]['height']; mnshares = 50; # last item is the newest height
            minitime = time.time()
+           continue
+        elif int(time.time()) - int(xmrbeast) >= 150:
+           print('new xmrvsbeast req')
+           raffel  = requests.get(f'https://xmrvsbeast.com/p2pool/stats')
+           raffel  = json.loads(raffel.text)
+           winer   = raffel['winner']
+           if lwon == winer:
+              xmrbeast = time.time()
+              continue
+           w1, w2  = winer.split('...')
+           users   = list(allWallets.keys())
+           for i in allWallets:
+               for ii in allWallets[i]:
+                   if w1 in ii['address'] and w2 in ii['address']:
+                      wallet  = ii['address']
+                      user    = i
+                      time    = raffel['time_remain']
+                      hashes  = homans(raffel['bonus_hr'] + raffel['donate_hr'])
+                      miners  = raffel['players']
+                      msg     = f"""
+**YOU WON XMRVSBEAST BONUS HR RAFFEL!**
+
+**Time Remaining:** {time} min
+**Bonus Hashrate:** {hashes}
+**Mining Players:** {miners}
+[**xmrvsbeast.com/p2pool/**](https://xmrvsbeast.com/p2pool/)
+
+**Winer Address:** {winer}
+**Your Address:** {wallet}
+**Pool:** {ii['pool']}
+
+**This Feature is under beta,**
+Please report if you think there was a mistake!
+See /help
+"""
+                      await moon.send_message(user, msg, disable_web_page_preview=True)
+           timetowait = raffel['time_remain']*60 # wait for the remaining time
+           if timetowait >= 2400: timetowait = 0 # instead of spamming the api
+           print('next xmrvsbeast req in:', timetowait)
+           xmrbeast = time.time() + timetowait   # don't wait if <40min tho
+           lwon     = winner  # don't notfiy people twice!
            continue
         else:
            await asyncio.sleep(1) # sleep to slow down if checks every cpu cycle
