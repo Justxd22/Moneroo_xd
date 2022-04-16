@@ -470,7 +470,7 @@ async def pushNOTFI():
            continue
         elif int(time.time()) - int(minitime) >= 60: # minip2p
            if len(p2pusers) == 0: continue
-           print('new mini req with', mnshares, mlasth)
+           print('new mini req with', mnshare, mlasth)
            shares  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshare}', headers=p2pheaders)
            shares  = json.loads(shares.text)
            mnshares  = []; index   = None
@@ -566,7 +566,7 @@ See /help
            continue
        except Exception as eeeror:
           print("[ERROR]\n\n", eeeror)
-          if logGroup: await moon.send_messages(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
+          if logGroup: await moon.send_message(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
           continue
 
 def runasync(): # run thread in asyncio loop
