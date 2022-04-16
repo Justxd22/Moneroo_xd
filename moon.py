@@ -408,19 +408,21 @@ async def pushNOTFI():
     if not pushNOTIFICATIONS: return
     print('starting push notifications service')
     await asyncio.sleep(5) # wait for client to start
-    await moon.send_message(logGroup,"**Started push Notifications service**")
+    if logGroup: await moon.send_message(logGroup,"**Started push Notifications service**")
     p2ptime  = time.time()
     minitime = time.time() + 90
     xmrbeast = time.time() + 120
     lwon  = None    # last winner
+    xsent = 0       # how much we alerted the winner
     lasth = 0       # last height is the last share from the previous request
-    nshares = 50    # number of shares to fetch
-    mlasth = 0; mnshares = 50; # for minip2p
+    nshare = 20    # number of shares to fetch, 20 on first run
+    mlasth = 0; mnshare = 20; # for minip2p
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
+       try:
         if int(time.time()) - int(p2ptime) >= 60: # use unix time to check how much time passed
            if len(p2pusers) == 0: continue
-           print('new req with', nshares, lasth)
-           shares  = requests.get(f'https://p2pool.observer/api/shares?limit={nshares}', headers=p2pheaders)
+           print('new req with', nshare, lasth)
+           shares  = requests.get(f'https://p2pool.observer/api/shares?limit={nshare}', headers=p2pheaders)
            shares  = json.loads(shares.text)
            nshares = []; index = None
            if lasth == 0:                                # if this is first run
@@ -431,9 +433,9 @@ async def pushNOTFI():
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and nshares == []:
-              if nshares >= 300: nshares = shares
+              if nshare >= 300: nshares = shares
               else:
-                 nshares += 50            # if we didn't find last height that means
+                 nshare += 50            # if we didn't find last height that means
                  continue                 # we missed a lot of shared get last 100+ shares
            elif index == 0: continue      # last height is still the last height continue
            else: nshares = shares[:index] # new shares after last height we checked
@@ -463,13 +465,13 @@ async def pushNOTFI():
                   msg += "\n\nYou can stop this alerts by switching to the address above and turnoff NotifyMe"
                   msg += "\nThis feature is under beta if you think there was a mistake please report see /help"
                   await moon.send_message(u, msg, disable_web_page_preview=True)
-           lasth = nshares[-1]['height']; nshares = 50; # last item is the newest height
+           lasth = nshares[-1]['height']; nshare = 50; # last item is the newest height
            p2ptime = time.time()
            continue
         elif int(time.time()) - int(minitime) >= 60: # minip2p
            if len(p2pusers) == 0: continue
            print('new mini req with', mnshares, mlasth)
-           shares  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshares}', headers=p2pheaders)
+           shares  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshare}', headers=p2pheaders)
            shares  = json.loads(shares.text)
            mnshares  = []; index   = None
            if mlasth == 0:                                 # if this is first run
@@ -480,9 +482,9 @@ async def pushNOTFI():
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and mnshares == []:
-              if mnshares >= 300: mnshares = shares
+              if mnshare >= 300: mnshares = shares
               else:
-                 mnshares += 50      # if we didn't find last height that means
+                 mnshare += 50      # if we didn't find last height that means
                  continue            # we missed a lot of shared get last 100+ shares
            elif index == 0: continue # last height is still the last height continue
            else: mnshares = shares[:index] # new shares after last height we checked
@@ -512,7 +514,7 @@ async def pushNOTFI():
                   msg += "\n\nYou can stop this alerts by switching to the address above and turnoff NotifyMe"
                   msg += "\nThis feature is under beta if you think there was a mistake please report see /help"
                   await moon.send_message(u, msg, disable_web_page_preview=True)
-           mlasth = mnshares[-1]['height']; mnshares = 50; # last item is the newest height
+           mlasth = mnshares[-1]['height']; mnshare = 50; # last item is the newest height
            minitime = time.time()
            continue
         elif int(time.time()) - int(xmrbeast) >= 150:
@@ -520,9 +522,12 @@ async def pushNOTFI():
            raffel  = requests.get(f'https://xmrvsbeast.com/p2pool/stats')
            raffel  = json.loads(raffel.text.replace("`",'')) # someting is wrong with xmrvsbeast json it has a '`'
            winer   = raffel['winner']
-           if lwon == winer:
-              xmrbeast = time.time()
-              continue
+           if winer in lwon:
+              if int(lwon.split("|")[1]) >= 2:
+                 print("xmrvsbeast sent twice moving on")
+                 xmrbeast = time.time()
+                 continue
+           else: xsent = 0
            w1, w2  = winer.split('...')
            for i in allWallets:
                for ii in allWallets[i]:
@@ -549,15 +554,20 @@ Please report if you think there was a mistake!
 See /help
 """
                       await moon.send_message(user, msg, disable_web_page_preview=True)
+                      xsent += 1
            timetowait = raffel['time_remain']*60 # wait for the remaining time
            if timetowait >= 2400: timetowait = 0 # instead of spamming the api
            print('next xmrvsbeast req in:', timetowait)
            xmrbeast = time.time() + timetowait   # don't wait if <40min tho
-           lwon     = winer  # don't notfiy people twice!
+           lwon     = f"{winer} |{xsent}"  # don't notfiy people twice!
            continue
         else:
            await asyncio.sleep(1) # sleep to slow down if checks every cpu cycle
            continue
+       except Exception as eeeror:
+          print("[ERROR]\n\n", eeeror)
+          if logGroup: await moon.send_messages(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
+          continue
 
 def runasync(): # run thread in asyncio loop
     loop = asyncio.new_event_loop()
