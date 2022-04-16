@@ -409,7 +409,7 @@ async def pushNOTFI():
     print('starting push notifications service')
     await asyncio.sleep(5) # wait for client to start
     await moon.send_message(logGroup,"**Started push Notifications service**")
-    p2ptime = time.time()
+    p2ptime  = time.time()
     minitime = time.time() + 90
     xmrbeast = time.time() + 120
     lwon  = None    # last winner
@@ -530,13 +530,13 @@ async def pushNOTFI():
                    if w1 in ii['address'] and w2 in ii['address']:
                       wallet  = ii['address']
                       user    = i
-                      time    = raffel['time_remain']
+                      rtime    = raffel['time_remain']
                       hashes  = homans(raffel['bonus_hr'] + raffel['donate_hr'])
                       miners  = raffel['players']
                       msg     = f"""
 **YOU WON XMRVSBEAST BONUS HR RAFFEL!**
 
-**Time Remaining:** {time} min
+**Time Remaining:** {rtime} min
 **Bonus Hashrate:** {hashes}
 **Mining Players:** {miners}
 [**xmrvsbeast.com/p2pool/**](https://xmrvsbeast.com/p2pool/)
