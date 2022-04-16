@@ -518,7 +518,7 @@ async def pushNOTFI():
         elif int(time.time()) - int(xmrbeast) >= 150:
            print('new xmrvsbeast req')
            raffel  = requests.get(f'https://xmrvsbeast.com/p2pool/stats')
-           raffel  = json.loads(raffel.text)
+           raffel  = json.loads(raffel.text.replace("`",'')) # someting is wrong with xmrvsbeast json it has a '`'
            winer   = raffel['winner']
            if lwon == winer:
               xmrbeast = time.time()
