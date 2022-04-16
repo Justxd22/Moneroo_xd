@@ -525,7 +525,6 @@ async def pushNOTFI():
               xmrbeast = time.time()
               continue
            w1, w2  = winer.split('...')
-           users   = list(allWallets.keys())
            for i in allWallets:
                for ii in allWallets[i]:
                    if w1 in ii['address'] and w2 in ii['address']:
@@ -540,7 +539,7 @@ async def pushNOTFI():
 **Time Remaining:** {rtime} min
 **Bonus Hashrate:** {hashes}
 **Mining Players:** {miners}
-[**xmrvsbeast.com/p2pool/**](https://xmrvsbeast.com/p2pool/)
+[<b>xmrvsbeast.com/p2pool/</b>](https://xmrvsbeast.com/p2pool/)
 
 **Winer Address:** {winer}
 **Your Address:** {wallet}
@@ -555,7 +554,7 @@ See /help
            if timetowait >= 2400: timetowait = 0 # instead of spamming the api
            print('next xmrvsbeast req in:', timetowait)
            xmrbeast = time.time() + timetowait   # don't wait if <40min tho
-           lwon     = winner  # don't notfiy people twice!
+           lwon     = winer  # don't notfiy people twice!
            continue
         else:
            await asyncio.sleep(1) # sleep to slow down if checks every cpu cycle
