@@ -172,7 +172,6 @@ async def wallet(client, message):
        if message.reply_to_message.reply_markup:
           if isinstance(message.reply_to_message.reply_markup, ForceReply):
              if message.reply_to_message.reply_markup.placeholder == "Pool name?":
-                print(message)
                 msg  = "**Alright i forwarded your request** to my dev, he will look into it asap"
                 dmsg = f"from: {getName(client,message)}\nid: {message.from_user.id}\n\nRequest: {text}"
                 await client.send_message("Pine_Orange",dmsg)
@@ -352,7 +351,7 @@ async def calls(client, message):
        msgid = message.message.reply_to_message.message_id
        walletADR = (await client.get_messages(message.message.chat.id, msgid)).text
        message.message.from_user.id =  message.message.chat.id
-       print(msgid, walletADR, "id: ", message.message.from_user.id)
+       print(msgid, walletADR, pool, "id: ", message.message.from_user.id)
        if not re.search("^[4|8]{1}([A-Za-z0-9]{105}|[A-Za-z0-9]{94})$", walletADR):
           await message.answer("Your wallet address is wrong")
           await message.message.delete()
@@ -371,13 +370,13 @@ async def calls(client, message):
        msg = ''
        if pool == 'minexmr':
           msg += """
-🔴🔴🔴⚠️ATTENTION⚠️🔴🔴🔴
+**🔴🔴🔴⚠️ATTENTION⚠️🔴🔴🔴
 MINEXMR users you need to switch to another pool ASAP,
 As minexmr hashrate is very high nearly [50% of the network,](https://miningpoolstats.stream/monero)
 If it reaches 51% xmr might be at risk [full details here,](https://www.investopedia.com/terms/1/51-attack.asp)
 High hashrate doesn't mean more profits, you may lose all your xmr!!!!
 🔴🔴🔴⚠️ATTENTION⚠️🔴🔴🔴
-\n\n\n\n"""
+**\n\n\n\n"""
        msg += f"**I saved your wallet** you can start using me now 👍 try the buttons\n\nYour Address: <code>{walletADR}</code>\nPool: <code>{pool}</code>"
        await message.message.edit_text(msg, reply_markup = keybd)
        bookup()
