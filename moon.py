@@ -412,10 +412,10 @@ async def pushNOTFI():
     p2ptime  = time.time()
     minitime = time.time() + 90
     xmrbeast = time.time() + 120
-    lwon  = None    # last winner
+    lwon  = ''      # last winner
     xsent = 0       # how much we alerted the winner
     lasth = 0       # last height is the last share from the previous request
-    nshare = 20    # number of shares to fetch, 20 on first run
+    nshare = 20     # number of shares to fetch, 20 on first run
     mlasth = 0; mnshare = 20; # for minip2p
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
        try:
