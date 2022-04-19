@@ -333,7 +333,7 @@ async def calls(client, message):
 
        p2pusers[message.message.from_user.id] = {'p': p, 'w': w}
        button = InlineKeyboardMarkup([[InlineKeyboardButton("📬 PING", callback_data="PINGME")], [InlineKeyboardButton(f"📳 Notify me ON", callback_data="NOTIFYME")]])
-       msg = f"**Alright, you will be notified once you make a share or get a payment\n\nPlease note this is still under beta,**\nFor now you can get notifications for one address only, i may add support for multi addresses\nplease report any bugs/feedback you have\n\nWallet: `{w}`\nPool: `{p}`"
+       msg = f"**Alright, you will be notified once you make a share\n\nPlease note this is still under beta,**\nFor now you can get notifications for one address only, i may add support for multi addresses\nplease report any bugs/feedback you have\n\nWallet: `{w}`\nPool: `{p}`"
        await message.message.edit_reply_markup(button)
        await message.message.reply_text(msg)
        await message.answer('Notifications Enabled!')
@@ -419,7 +419,7 @@ async def pushNOTFI():
     mlasth = 0; mnshare = 20; # for minip2p
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
        try:
-        if int(time.time()) - int(p2ptime) >= 60: # use unix time to check how much time passed
+        if int(time.time()) - int(p2ptime) >= 80: # use unix time to check how much time passed
            if len(p2pusers) == 0: continue
            print('new req with', nshare, lasth)
            shares  = requests.get(f'https://p2pool.observer/api/shares?limit={nshare}', headers=p2pheaders)
@@ -433,9 +433,9 @@ async def pushNOTFI():
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and nshares == []:
-              if nshare >= 300: nshares = shares
+              if nshare >= 650: nshares = shares
               else:
-                 nshare += 50            # if we didn't find last height that means
+                 nshare += 150            # if we didn't find last height that means
                  continue                 # we missed a lot of shared get last 100+ shares
            elif index == 0: continue      # last height is still the last height continue
            else: nshares = shares[:index] # new shares after last height we checked
@@ -468,7 +468,7 @@ async def pushNOTFI():
            lasth = nshares[-1]['height']; nshare = 50; # last item is the newest height
            p2ptime = time.time()
            continue
-        elif int(time.time()) - int(minitime) >= 60: # minip2p
+        elif int(time.time()) - int(minitime) >= 80: # minip2p
            if len(p2pusers) == 0: continue
            print('new mini req with', mnshare, mlasth)
            shares  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshare}', headers=p2pheaders)
@@ -482,9 +482,9 @@ async def pushNOTFI():
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and mnshares == []:
-              if mnshare >= 300: mnshares = shares
+              if mnshare >= 650: mnshares = shares
               else:
-                 mnshare += 50      # if we didn't find last height that means
+                 mnshare += 150      # if we didn't find last height that means
                  continue            # we missed a lot of shared get last 100+ shares
            elif index == 0: continue # last height is still the last height continue
            else: mnshares = shares[:index] # new shares after last height we checked
@@ -538,7 +538,7 @@ async def pushNOTFI():
                       hashes  = homans(raffel['bonus_hr'] + raffel['donate_hr'])
                       miners  = raffel['players']
                       msg     = f"""
-**YOU WON XMRVSBEAST BONUS HR RAFFEL!**
+**YOU WON XMRVSBEAST BONUS HR RAFFLE!**
 
 **Time Remaining:** {rtime} min
 **Bonus Hashrate:** {hashes}

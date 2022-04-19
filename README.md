@@ -7,10 +7,22 @@
 
 Code for the telegram bot [@Moneroo_XD_bot](https://t.me/Moneroo_XD_bot)
 
+[jif]
+[jif2]
+<img src="./demoo/jif1.mp4" alt="jif1"/>
+<img src="./demoo/jif2.mp4" alt="jif2"/>
+share notfications
+
 Features :] :
 - 7 xmr pools supported
+<img src="./demoo/pools.jpg" alt="Pools"/>
 - 3 pools has graph support
+<img src="./demoo/graph1.jpg" alt="graphs"/>
+<img src="./demoo/graph2.jpg" alt="graphs"/>
 - 2 pools has share notifications push up
+<img src="./demoo/share.jpg" alt="shares"/>
+- xmrvsbeast.com won notifications
+<img src="./demoo/won.jpg" alt="winning"/>
 - minexmr has switch warning to advice ppl to switch
 - based on the pyrogram lib
 - Uses Multiple pools API
