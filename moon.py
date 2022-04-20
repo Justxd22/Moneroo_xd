@@ -408,9 +408,10 @@ async def logger(client, message, msg, text=""):
 
 async def pushNOTFI():
     if not pushNOTIFICATIONS: return
+    if not logGroup: return
     print('starting push notifications service')
     await asyncio.sleep(5) # wait for client to start
-    if logGroup: await moon.send_message(logGroup,"**Started push Notifications service**")
+    await moon.send_message(logGroup,"**Started push Notifications service**")
     p2ptime  = time.time()
     minitime = time.time() + 90
     xmrbeast = time.time() + 120
@@ -566,6 +567,9 @@ See /help
         else:
            await asyncio.sleep(1) # sleep to slow down if checks every cpu cycle
            continue
+       except requests.exceptions.ConnectionError:
+          await asyncio.sleep(2) # for any http errors ignore them
+          continue
        except Exception as eeeror:
           print("[ERROR]\n\n", eeeror)
           if logGroup: await moon.send_message(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
