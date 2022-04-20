@@ -192,12 +192,14 @@ async def wallet(client, message):
        print("Craffted wallet!")
        tex1, tex2 = text.replace("💰", "").split("***")
        tex2, pool = tex2.split(" ")
+       wallid = ''; pool = '';
        for i in allWallets[message.from_user.id]:
            if tex1 in i['address'] and tex2 in i['address'] and pool in i['pool']:
               wallid = i['address']; pool = i['pool']
               usrWallets[message.from_user.id] = {'address':wallid,'pool':pool}
               break
-       msg = f"**Alright switched your wallet**\n\nUsing Address: <code>{wallid}</code>\nPool: <code>{pool}</code>"
+       if wallid == '' and pool == '':  msg = f"**I can't find this wallet address can you add it again?**"
+       else: msg = f"**Alright switched your wallet**\n\nUsing Address: <code>{wallid}</code>\nPool: <code>{pool}</code>"
        await message.reply_text(msg, reply_markup = keybd)
        bookup()
        return
