@@ -7,31 +7,32 @@
 
 Code for the telegram bot [@Moneroo_XD_bot](https://t.me/Moneroo_XD_bot)
 
-[jif]
-[jif2]
-<img src="./demoo/jif1.mp4" alt="jif1"/>
-<img src="./demoo/jif2.mp4" alt="jif2"/>
-share notfications
-
 Features :] :
-- 7 xmr pools supported
-<img src="./demoo/pools.jpg" alt="Pools"/>
-- 3 pools has graph support
-<img src="./demoo/graph1.jpg" alt="graphs"/>
-<img src="./demoo/graph2.jpg" alt="graphs"/>
-- 2 pools has share notifications push up
-<img src="./demoo/share.jpg" alt="shares"/>
-- xmrvsbeast.com won notifications
-<img src="./demoo/won.jpg" alt="winning"/>
-- minexmr has switch warning to advice ppl to switch
-- based on the pyrogram lib
-- Uses Multiple pools API
-- very low hardware/network usage
-- Supports Heroku/railway/local deploys
-- Completely safe no third-party libs used
-  all data collected is safe (check requr.txt) 
+ - 7 xmr pools supported
+ - 3 pools has graph support
+ - 2 pools has share notifications push up
+ - xmrvsbeast.com won notifications
+ - minexmr has switch warning to advice ppl to switch
+ - based on the pyrogram lib
+ - Uses Multiple pools API
+ - very low hardware/network usage
+ - Supports Heroku/railway/local deploys
+ - Completely safe no third-party libs used
+   all data collected is safe (check requr.txt) 
 
 enjoy :)
+
+<img src="./demoo/pools.jpg" width="390" height="250" alt="Pools"/>
+<img src="./demoo/graph1.jpg" width="450" height="280" alt="graphs"/>
+<img src="./demoo/graph2.jpg" width="450" height="280" alt="graphs"/>
+<img src="./demoo/share.jpg" width="360" height="600" alt="shares"/>
+<img src="./demoo/won.jpg" width="430" height="330" alt="winning"/>
+
+# Demo
+
+https://user-images.githubusercontent.com/66136622/164122609-c30e36e6-5994-4e3b-a99e-5c27d4d527bd.mp4
+
+https://user-images.githubusercontent.com/66136622/164122416-d3cabb76-ec57-47b2-b437-a6eee705a0e7.mp4
 
 # Setup
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/JecTVw?referralCode=4_MSke)
