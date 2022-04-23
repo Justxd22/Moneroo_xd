@@ -50,10 +50,10 @@ allwall | "{}"
 usrs    | "{}"
 p2pusrs | "{}" 
 
-usrwall  => current wallet address for all users
-allwall  => all wallet addresses for all users 
-usrs     => all users id
-p2pusrs  => users subscribed to p2pool notifications
+usrwall  => current wallet address for all users  
+allwall  => all wallet addresses for all users  
+usrs     => all users id  
+p2pusrs  => users subscribed to p2pool notifications  
 
 Bot will fail to start if one of these keys is missing from db
 Add them using redis-cli or run the db-setup.py script

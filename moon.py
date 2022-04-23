@@ -429,6 +429,7 @@ async def pushNOTFI():
            shares  = json.loads(shares.text)
            nshares = []; index = None
            if lasth == 0:                                # if this is first run
+              print('first run')
               lasth=shares[0]['height']; nshares=shares; # treat all shares as new
            else:
               for i in shares:               # search for last height
@@ -436,14 +437,27 @@ async def pushNOTFI():
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and nshares == []:
-              if nshare >= 650: nshares = shares
+              print('not found', lasth)
+              if nshare >= 650:
+                 print('giving up', lasth)
+                 ttt = json.dumps(shares)
+                 test = 'is lasth there? : ' + str(str(lasth) in ttt)
+                 print(test)
+                 debug = open('debug.txt', 'w')
+                 debug.write(ttt)
+                 debug.close()
+                 await moon.send_message(logGroup, f"**Attention!**\nLASTH NOT FOUND {lasth}\nTest: {test}")
+                 await moon.send_document(logGroup, 'debug.txt')
+                 nshares = shares
               else:
                  nshare += 150            # if we didn't find last height that means
+                 print('trying again.. ', nshare)
+                 await asyncio.sleep(1)
                  continue                 # we missed a lot of shared get last 100+ shares
            elif index == 0: continue      # last height is still the last height continue
            else: nshares = shares[:index] # new shares after last height we checked
            nshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
-           print('new shares:', len(nshares))
+           print('new shares:', len(nshares), 'index: ', index)
            userids = list(p2pusers.keys())
            for i in nshares:
              for ii in userids:
@@ -478,6 +492,7 @@ async def pushNOTFI():
            shares  = json.loads(shares.text)
            mnshares  = []; index   = None
            if mlasth == 0:                                 # if this is first run
+              print('first run')
               mlasth=shares[0]['height']; mnshares=shares; # treat all shares as new
            else:
               for i in shares:               # search for last height
@@ -485,14 +500,27 @@ async def pushNOTFI():
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and mnshares == []:
-              if mnshare >= 650: mnshares = shares
+              print('not found', mlasth)
+              if mnshare >= 650:
+                 print('giving up', mlasth)
+                 ttt = json.dumps(shares)
+                 test = 'is mlasth there? : ' + str(str(mlasth) in ttt)
+                 print(test)
+                 debug = open('debugMINI.txt', 'w')
+                 debug.write(ttt)
+                 debug.close()
+                 await moon.send_message(logGroup, f"**Attention!**\nmLASTH NOT FOUND {mlasth}\nTest: {test}")
+                 await moon.send_document(logGroup, 'debugMINI.txt')
+                 mnshares = shares
               else:
                  mnshare += 150      # if we didn't find last height that means
+                 print('trying again.. ', mnshare)
+                 await asyncio.sleep(1)
                  continue            # we missed a lot of shared get last 100+ shares
            elif index == 0: continue # last height is still the last height continue
            else: mnshares = shares[:index] # new shares after last height we checked
            mnshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
-           print('new mini shares:', len(mnshares))
+           print('new mini shares:', len(mnshares), 'index: ', index)
            userids = list(p2pusers.keys())
            for i in mnshares:
              for ii in userids:
