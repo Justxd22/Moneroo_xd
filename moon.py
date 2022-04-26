@@ -422,7 +422,7 @@ async def pushNOTFI():
     mlasth = 0; mnshare = 20; # for minip2p
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
        try:
-        if int(time.time()) - int(p2ptime) >= 80: # use unix time to check how much time passed
+        if int(time.time()) - int(p2ptime) >= 120: # use unix time to check how much time passed
            if len(p2pusers) == 0: continue
            print('new req with', nshare, lasth)
            shares  = requests.get(f'https://p2pool.observer/api/shares?limit={nshare}', headers=p2pheaders)
@@ -485,40 +485,50 @@ async def pushNOTFI():
            lasth = nshares[-1]['height']; nshare = 50; # last item is the newest height
            p2ptime = time.time()
            continue
-        elif int(time.time()) - int(minitime) >= 80: # minip2p
+        elif int(time.time()) - int(minitime) >= 120: # minip2p
            if len(p2pusers) == 0: continue
            print('new mini req with', mnshare, mlasth)
-           shares  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshare}', headers=p2pheaders)
-           shares  = json.loads(shares.text)
+           sharesM  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshare}', headers=p2pheaders)
+           sharesM  = json.loads(sharesM.text)
            mnshares  = []; index   = None
            if mlasth == 0:                                 # if this is first run
               print('first run')
-              mlasth=shares[0]['height']; mnshares=shares; # treat all shares as new
+              mlasth=sharesM[0]['height']; mnshares=sharesM; # treat all shares as new
            else:
-              for i in shares:               # search for last height
+              for i in sharesM:               # search for last height
                   if i['height'] == mlasth:  # get index
-                     index = shares.index(i) # use index to get only new shares
+                     index = sharesM.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
            if not index and mnshares == []:
               print('not found', mlasth)
               if mnshare >= 650:
                  print('giving up', mlasth)
-                 ttt = json.dumps(shares)
+                 ttt = json.dumps(sharesM)
                  test = 'is mlasth there? : ' + str(str(mlasth) in ttt)
                  print(test)
                  debug = open('debugMINI.txt', 'w')
                  debug.write(ttt)
                  debug.close()
                  await moon.send_message(logGroup, f"**Attention!**\nmLASTH NOT FOUND {mlasth}\nTest: {test}")
-                 await moon.send_document(logGroup, 'debugMINI.txt')
-                 mnshares = shares
+                 await moon.send_document(logGroup, 'debugMINI.txt' )
+                 if 'True' in test:
+                     for i in sharesM:
+                         if i['height'] == mlasth:
+                            index = sharesM.index(i)
+                            break
+                 if index:
+                    mnshares = sharesM[:index]
+                    print('solved,', len(mnshares))
+                    await moon.send_message(logGroup, f"nvm i solved it {len(mnshares)}")
+                    pass
+                 mnshares = sharesM
               else:
                  mnshare += 150      # if we didn't find last height that means
                  print('trying again.. ', mnshare)
                  await asyncio.sleep(1)
                  continue            # we missed a lot of shared get last 100+ shares
            elif index == 0: continue # last height is still the last height continue
-           else: mnshares = shares[:index] # new shares after last height we checked
+           else: mnshares = sharesM[:index] # new shares after last height we checked
            mnshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
            print('new mini shares:', len(mnshares), 'index: ', index)
            userids = list(p2pusers.keys())
@@ -599,6 +609,7 @@ See /help
           await asyncio.sleep(2) # for any http errors ignore them
           continue
        except Exception as eeeror:
+          await asyncio.sleep(4)
           print("[ERROR]\n\n", eeeror)
           if logGroup: await moon.send_message(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
           continue
