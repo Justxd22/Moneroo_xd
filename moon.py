@@ -495,10 +495,11 @@ async def pushNOTFI():
               print('first run')
               mlasth=sharesM[0]['height']; mnshares=sharesM; # treat all shares as new
            else:
-              for i in sharesM:               # search for last height
-                  if i['height'] == mlasth:  # get index
-                     index = sharesM.index(i) # use index to get only new shares
-                     break                   # BREAK FOR NOT WHILE
+              for i in range(len(sharesM)):               # search for last height
+                  if mlasth in sharesM[i].values():  # get index
+                     print('found', mlasth, i)
+                     index = i # use index to get only new shares
+                     break     # BREAK FOR NOT WHILE
            if not index and mnshares == []:
               print('not found', mlasth)
               if mnshare >= 650:
@@ -512,6 +513,7 @@ async def pushNOTFI():
                  await moon.send_message(logGroup, f"**Attention!**\nmLASTH NOT FOUND {mlasth}\nTest: {test}")
                  await moon.send_document(logGroup, 'debugMINI.txt' )
                  if 'True' in test:
+                     print('attempting another search')
                      for i in sharesM:
                          if i['height'] == mlasth:
                             index = sharesM.index(i)
