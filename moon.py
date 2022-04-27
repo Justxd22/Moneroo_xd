@@ -436,7 +436,7 @@ async def pushNOTFI():
                   if i['height'] == lasth:   # get index
                      index = shares.index(i) # use index to get only new shares
                      break                   # BREAK FOR NOT WHILE
-           if not index and nshares == []:
+           if index == None and nshares == []:
               print('not found', lasth)
               if nshare >= 650:
                  print('giving up', lasth)
@@ -500,7 +500,7 @@ async def pushNOTFI():
                      print('found', mlasth, i)
                      index = i # use index to get only new shares
                      break     # BREAK FOR NOT WHILE
-           if not index and mnshares == []:
+           if index == None and mnshares == []: # Finally fixed the issue 0 is considered as False smh
               print('not found', mlasth)
               if mnshare >= 650:
                  print('giving up', mlasth)
