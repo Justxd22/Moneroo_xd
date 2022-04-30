@@ -422,7 +422,7 @@ async def pushNOTFI():
     mlasth = 0; mnshare = 20; # for minip2p
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
        try:
-        if int(time.time()) - int(p2ptime) >= 120: # use unix time to check how much time passed
+        if int(time.time()) - int(p2ptime) >= 90: # use unix time to check how much time passed
            if len(p2pusers) == 0: continue
            print('new req with', nshare, lasth)
            shares  = requests.get(f'https://p2pool.observer/api/shares?limit={nshare}', headers=p2pheaders)
@@ -485,7 +485,7 @@ async def pushNOTFI():
            lasth = nshares[-1]['height']; nshare = 50; # last item is the newest height
            p2ptime = time.time()
            continue
-        elif int(time.time()) - int(minitime) >= 120: # minip2p
+        elif int(time.time()) - int(minitime) >= 90: # minip2p
            if len(p2pusers) == 0: continue
            print('new mini req with', mnshare, mlasth)
            sharesM  = requests.get(f'https://mini.p2pool.observer/api/shares?limit={mnshare}', headers=p2pheaders)
@@ -497,7 +497,6 @@ async def pushNOTFI():
            else:
               for i in range(len(sharesM)):               # search for last height
                   if mlasth in sharesM[i].values():  # get index
-                     print('found', mlasth, i)
                      index = i # use index to get only new shares
                      break     # BREAK FOR NOT WHILE
            if index == None and mnshares == []: # Finally fixed the issue 0 is considered as False smh
@@ -512,17 +511,6 @@ async def pushNOTFI():
                  debug.close()
                  await moon.send_message(logGroup, f"**Attention!**\nmLASTH NOT FOUND {mlasth}\nTest: {test}")
                  await moon.send_document(logGroup, 'debugMINI.txt' )
-                 if 'True' in test:
-                     print('attempting another search')
-                     for i in sharesM:
-                         if i['height'] == mlasth:
-                            index = sharesM.index(i)
-                            break
-                 if index:
-                    mnshares = sharesM[:index]
-                    print('solved,', len(mnshares))
-                    await moon.send_message(logGroup, f"nvm i solved it {len(mnshares)}")
-                    pass
                  mnshares = sharesM
               else:
                  mnshare += 150      # if we didn't find last height that means

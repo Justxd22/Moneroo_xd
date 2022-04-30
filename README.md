@@ -90,7 +90,7 @@ you will need a redis db find one :)
 
 # Credits
 
-[@pyrogram] (https://github.com/pyrogram/pyrogram) - telegram bot api
+[@pyrogram](https://github.com/pyrogram/pyrogram) - telegram bot api
 
 pm on telegram for any queries [@Pine_Orange](t.me/Pine_Orange) or [@xd2222](t.me/xd2222)
 
