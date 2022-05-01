@@ -184,7 +184,7 @@ async def wallet(client, message):
        except KeyError: allWallets[message.from_user.id] = list()
 
        msg = "**Please select a pool from the supported list below**"
-       await message.reply_text(msg, reply_to_message_id=message.message_id, reply_markup=pools)
+       await message.reply_text(msg, reply_to_message_id=message.id, reply_markup=pools)
        return
 
 
