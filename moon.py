@@ -350,7 +350,7 @@ async def calls(client, message):
           msgg = await message.message.reply_text(msg, reply_to_message_id=message.message.reply_to_message_id,reply_markup=ForceReply(True, "Pool name?"))
           return
 
-       msgid = message.message.reply_to_message.message_id
+       msgid = message.message.reply_to_message.id
        walletADR = (await client.get_messages(message.message.chat.id, msgid)).text
        message.message.from_user.id =  message.message.chat.id
        print(msgid, walletADR, pool, "id: ", message.message.from_user.id)
