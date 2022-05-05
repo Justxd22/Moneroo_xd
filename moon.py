@@ -454,7 +454,10 @@ async def pushNOTFI():
                  print('trying again.. ', nshare)
                  await asyncio.sleep(1)
                  continue                 # we missed a lot of shared get last 100+ shares
-           elif index == 0: continue      # last height is still the last height continue
+           elif index == 0:               # last height is still the last height continue
+                 await asyncio.sleep(1)
+                 print('no new shares!')
+                 continue
            else: nshares = shares[:index] # new shares after last height we checked
            nshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
            print('new shares:', len(nshares), 'index: ', index)
@@ -517,7 +520,10 @@ async def pushNOTFI():
                  print('trying again.. ', mnshare)
                  await asyncio.sleep(1)
                  continue            # we missed a lot of shared get last 100+ shares
-           elif index == 0: continue # last height is still the last height continue
+           elif index == 0:          # last height is still the last height continue
+                 await asyncio.sleep(1)
+                 print('no new mshares!')
+                 continue
            else: mnshares = sharesM[:index] # new shares after last height we checked
            mnshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
            print('new mini shares:', len(mnshares), 'index: ', index)

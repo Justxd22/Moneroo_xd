@@ -48,6 +48,7 @@ async def mopool(client, message, wallet, GRAPH=False):
              graph="pools/assets/no-data-graph.jpg"
              print('no graph')
           else: graph= cgraph(data,homans(data[0]['hsh2']),homans(data[0]['hsh']),message.from_user.id)
+          print('graph done!')
 
        totalMiners = len(miners)-1 # api always gives a total item contains all miners combined
        paidamt     = 0.0
