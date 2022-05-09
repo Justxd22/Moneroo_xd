@@ -1,4 +1,4 @@
-import requests, json, re, asyncio, time, datetime
+import requests, json, re, asyncio, time, datetime, random
 from threading import Thread as thrd
 from random import randint
 from pyrogram import Client, filters
@@ -703,7 +703,7 @@ See /help
           print("[ERROR]\n\n", eeeror)
           errort +=1
           if logGroup: await moon.send_message(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
-          if errort <= 250:
+          if errort >= 250:
              await moon.send_message(logGroup, f"**  ERROR  **\n\nDUE TO 250+ ERRORS NOTFICATIONS DISABLED!")
              break
           continue
