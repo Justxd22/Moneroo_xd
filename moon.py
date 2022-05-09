@@ -114,6 +114,7 @@ async def brd(bot, message):
     total_users = len(usrs)
     print("brodcast")
     broadcast_msg = m.reply_to_message
+    broadcast_ids = {}
 
     while True:
         broadcast_id = ''.join([random.choice(string.ascii_letters) for i in range(3)])
