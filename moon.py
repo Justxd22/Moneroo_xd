@@ -420,6 +420,7 @@ async def pushNOTFI():
     lasth = 0       # last height is the last share from the previous request
     nshare = 20     # number of shares to fetch, 20 on first run
     mlasth = 0; mnshare = 20; # for minip2p
+    errort = 0
     while 1: # the most accurate timer ever no sleep no async.sleep no shit
        try:
         if int(time.time()) - int(p2ptime) >= 90: # use unix time to check how much time passed
@@ -607,7 +608,11 @@ See /help
        except Exception as eeeror:
           await asyncio.sleep(4)
           print("[ERROR]\n\n", eeeror)
+          errort +=1
           if logGroup: await moon.send_message(logGroup, f"**  ERROR  **\n\n<code>{eeeror}</code>")
+          if errort <= 250:
+             await moon.send_message(logGroup, f"**  ERROR  **\n\nDUE TO 250+ ERRORS NOTFICATIONS DISABLED!")
+             break
           continue
 
 def runasync(): # run thread in asyncio loop
