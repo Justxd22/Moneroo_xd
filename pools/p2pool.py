@@ -39,7 +39,7 @@ async def p2pool(c,m,w,POOL='',NOTF="OFF"):
        if poolstats.status_code != 200:
           await stkr.delete()
           await messg.edit_text(msg1)
-          print("http error\n\n", stats.text)
+          print("http error\n\n", poolstats.text)
           return
 
        poolstats  = json.loads(poolstats.text)
