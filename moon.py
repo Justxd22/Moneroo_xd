@@ -136,6 +136,22 @@ async def brd(bot, message):
         success = success
     )
 
+    async def send_msg(user_id, message):
+        try:
+           await message.copy(chat_id=user_id)
+           return 200, None
+        except FloodWait as e:
+            await asyncio.sleep(e.x)
+            return send_msg(user_id, message)
+        except InputUserDeactivated:
+            return 400, f"{user_id} : deactivated\n"
+        except UserIsBlocked:
+            return 400, f"{user_id} : blocked the bot\n"
+        except PeerIdInvalid:
+            return 400, f"{user_id} : user id invalid\n"
+        except Exception as e:
+            return 500, f"{user_id} : {traceback.format_exc()}\n"
+
     for user in usrs:
         sts, msg = await send_msg(
            user_id = int(user),
@@ -181,22 +197,6 @@ async def brd(bot, message):
         )
     try: os.remove('broadcast.txt')
     except: pass
-
-    async def send_msg(user_id, message):
-        try:
-           await message.copy(chat_id=user_id)
-           return 200, None
-        except FloodWait as e:
-            await asyncio.sleep(e.x)
-            return send_msg(user_id, message)
-        except InputUserDeactivated:
-            return 400, f"{user_id} : deactivated\n"
-        except UserIsBlocked:
-            return 400, f"{user_id} : blocked the bot\n"
-        except PeerIdInvalid:
-            return 400, f"{user_id} : user id invalid\n"
-        except Exception as e:
-            return 500, f"{user_id} : {traceback.format_exc()}\n"
 
 @moon.on_message(filters.command("users"))
 async def get(client, message): # cmd to check users growth
