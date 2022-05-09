@@ -1,8 +1,9 @@
-import requests, json, re, asyncio, time
+import requests, json, re, asyncio, time, datetime
 from threading import Thread as thrd
 from random import randint
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ForceReply
+from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid
 from stuff import *
 from database import redis_connection
 from pools.util.timef import timeinletters as timef
@@ -103,6 +104,98 @@ async def restart(client, message):
        await message.reply_text("**Hold tight restarting.....**")
        restartDyno()
        await message.reply_text("**Restarted?.....**")
+
+@moon.on_message(filters.command("brd"))
+async def brd(bot, message):
+    if str(message.chat.id) != "800219239":
+        return
+    m = message
+    usrs = users
+    total_users = len(usrs)
+    print("brodcast")
+    broadcast_msg = m.reply_to_message
+
+    while True:
+        broadcast_id = ''.join([random.choice(string.ascii_letters) for i in range(3)])
+        if not broadcast_ids.get(broadcast_id):
+            break
+
+    out = await m.reply_text(
+        text = f"Broadcast initiated! You will be notified with log file when all the users are notified."
+    )
+    start_time = time.time()
+    done = 0
+    failed = 0
+    success = 0
+    failist = []
+    broadcast_ids[broadcast_id] = dict(
+        total = total_users,
+        current = done,
+        failed = failed,
+        success = success
+    )
+
+    for user in usrs:
+        sts, msg = await send_msg(
+           user_id = int(user),
+           message = broadcast_msg)
+        if msg is not None:
+           failist.append(msg)
+
+        if sts == 200:
+           success += 1
+        else:
+           failed += 1
+
+        done += 1
+        if broadcast_ids.get(broadcast_id) is None:
+           break
+        else:
+           broadcast_ids[broadcast_id].update(
+               dict(
+                current = done,
+                failed = failed,
+                success = success))
+
+    if broadcast_ids.get(broadcast_id):
+        broadcast_ids.pop(broadcast_id)
+    completed_in = datetime.timedelta(seconds=int(time.time()-start_time))
+    failtxt = open('broadcast.txt', 'w')
+    for i in failist: failtxt.write(str(i) + '\n')
+    failtxt.close()
+    await asyncio.sleep(3)
+
+    await out.delete()
+
+    if failed == 0:
+        await m.reply_text(
+            text=f"broadcast completed in `{completed_in}`\n\nTotal users {total_users}.\nTotal done {done}, {success} success and {failed} failed.",
+            quote=True
+        )
+    else:
+        await m.reply_document(
+            document='broadcast.txt',
+            caption=f"broadcast completed in `{completed_in}`\n\nTotal users {total_users}.\nTotal done {done}, {success} success and {failed} failed.",
+            quote=True
+        )
+    try: os.remove('broadcast.txt')
+    except: pass
+
+    async def send_msg(user_id, message):
+        try:
+           await message.copy(chat_id=user_id)
+           return 200, None
+        except FloodWait as e:
+            await asyncio.sleep(e.x)
+            return send_msg(user_id, message)
+        except InputUserDeactivated:
+            return 400, f"{user_id} : deactivated\n"
+        except UserIsBlocked:
+            return 400, f"{user_id} : blocked the bot\n"
+        except PeerIdInvalid:
+            return 400, f"{user_id} : user id invalid\n"
+        except Exception as e:
+            return 500, f"{user_id} : {traceback.format_exc()}\n"
 
 @moon.on_message(filters.command("users"))
 async def get(client, message): # cmd to check users growth
