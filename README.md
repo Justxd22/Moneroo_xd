@@ -12,7 +12,7 @@ Features :] :
  - 3 pools has graph support
  - 2 pools has share notifications push up
  - xmrvsbeast.com won notifications
- - minexmr has switch warning to advice ppl to switch
+ - minexmr has switch warning to advice ppl to switch pool
  - based on the pyrogram lib
  - Uses Multiple pools API
  - very low hardware/network usage
