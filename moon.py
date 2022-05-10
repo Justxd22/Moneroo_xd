@@ -552,6 +552,7 @@ async def pushNOTFI():
            elif index == 0:               # last height is still the last height continue
                  await asyncio.sleep(1)
                  print('no new shares!')
+                 p2ptime = time.time()
                  continue
            else: nshares = shares[:index] # new shares after last height we checked
            nshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
@@ -618,6 +619,7 @@ async def pushNOTFI():
            elif index == 0:          # last height is still the last height continue
                  await asyncio.sleep(1)
                  print('no new mshares!')
+                 minitime = time.time()
                  continue
            else: mnshares = sharesM[:index] # new shares after last height we checked
            mnshares.sort(reverse=False, key=lambda d:d['height']) # sort height from old to new
